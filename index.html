@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forecast &amp; RTC Tracker | SEIDOR México</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+  html, body{ margin:0; padding:0; background:#F4F6FA; }
+
+  :root{
+    --navy:#0A1226;
+    --blue:#1E5BB8;
+    --cyan:#33B4DD;
+    --grey-bg:#F4F6FA;
+    --grey-line:#E2E6ED;
+    --grey-text:#5B6472;
+    --red:#C0392B;
+    --red-bg:#FBEAE8;
+    --amber:#B8860B;
+    --amber-bg:#FBF3DC;
+    --green:#1E8E3E;
+    --green-bg:#E4F5E9;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  .ft-root{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--grey-bg);
+    color:var(--navy);
+    padding:0;
+    max-width:1180px;
+    margin:0 auto;
+    min-height:100vh;
+    box-shadow:0 0 40px rgba(10,18,38,0.06);
+  }
+  @media (min-width:1220px){
+    .ft-root{ margin:24px auto; border-radius:14px; min-height:auto; overflow:hidden; }
+  }
+  .ft-header-actions{ display:flex; gap:8px; align-items:center; }
+  .ft-header-actions button{
+    font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:600;
+    background:rgba(255,255,255,0.08); color:#CBD8EE; border:1px solid rgba(255,255,255,0.18);
+    border-radius:7px; padding:7px 12px; cursor:pointer;
+  }
+  .ft-header-actions button:hover{ background:rgba(255,255,255,0.16); color:white; }
+  .ft-header{
+    background:linear-gradient(120deg,var(--navy) 0%, #142242 100%);
+    color:white;
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .ft-header h1{
+    font-family:'Poppins',sans-serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  .ft-header .sub{
+    font-size:12px;
+    color:#9FB3D1;
+    margin-top:2px;
+  }
+  .ft-header .accent{ color:var(--cyan); }
+  .ft-tabs{
+    display:flex;
+    gap:4px;
+    background:var(--white);
+    padding:8px 16px 0 16px;
+    border-bottom:1px solid var(--grey-line);
+  }
+  .ft-tab{
+    font-family:'Poppins',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:10px 16px;
+    cursor:pointer;
+    color:var(--grey-text);
+    border-bottom:3px solid transparent;
+    user-select:none;
+  }
+  .ft-tab.active{ color:var(--blue); border-bottom-color:var(--blue); }
+  .ft-tab:hover{ color:var(--navy); }
+  .ft-body{ padding:20px 24px; background:var(--white); min-height:400px; }
+
+  .ft-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .ft-card{
+    background:var(--white);
+    border:1px solid var(--grey-line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .ft-card .label{ font-size:11px; color:var(--grey-text); text-transform:uppercase; letter-spacing:0.4px; font-weight:600;}
+  .ft-card .value{ font-family:'Poppins',sans-serif; font-size:24px; font-weight:700; margin-top:6px; color:var(--navy);}
+  .ft-card .caption{ font-size:11px; color:var(--grey-text); margin-top:4px;}
+
+  .ft-progress{ height:8px; background:var(--grey-line); border-radius:6px; margin-top:10px; overflow:hidden;}
+  .ft-progress-fill{ height:100%; border-radius:6px; transition:width 0.4s ease;}
+
+  .ft-section-title{
+    font-family:'Poppins',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--navy);
+    margin:24px 0 10px 0;
+    display:flex; align-items:center; gap:8px;
+  }
+  .ft-section-title .bar{ width:4px; height:16px; background:var(--blue); border-radius:2px; display:inline-block;}
+
+  table.ft-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ft-table th{
+    background:var(--navy); color:white; text-align:left; padding:9px 10px;
+    font-weight:600; font-size:11.5px; position:sticky; top:0;
+  }
+  table.ft-table td{ padding:8px 10px; border-bottom:1px solid var(--grey-line); vertical-align:middle;}
+  table.ft-table tr:hover td{ background:#FAFBFD; }
+  .ft-table-wrap{ overflow-x:auto; border:1px solid var(--grey-line); border-radius:10px; }
+
+  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge-commit{ background:var(--green-bg); color:var(--green); }
+  .badge-bestcase{ background:var(--amber-bg); color:var(--amber); }
+  .badge-pipeline{ background:#E7ECF5; color:var(--blue); }
+  .badge-omitted{ background:#EEE; color:#888; }
+  .badge-stalled{ background:var(--red-bg); color:var(--red); }
+  .badge-ok{ background:var(--green-bg); color:var(--green); }
+  .badge-ganada{ background:var(--green-bg); color:var(--green); }
+  .badge-perdida{ background:var(--red-bg); color:var(--red); }
+  .badge-abierta{ background:#E7ECF5; color:var(--blue); }
+
+  .ft-btn{
+    font-family:'Poppins',sans-serif;
+    font-size:12.5px; font-weight:600;
+    background:var(--blue); color:white; border:none; border-radius:7px;
+    padding:9px 16px; cursor:pointer;
+  }
+  .ft-btn:hover{ background:#174a94; }
+  .ft-btn.secondary{ background:var(--white); color:var(--blue); border:1px solid var(--blue); }
+  .ft-btn.secondary:hover{ background:#EEF3FB; }
+  .ft-btn.danger{ background:var(--white); color:var(--red); border:1px solid var(--red); padding:4px 10px; font-size:11px;}
+  .ft-btn.danger:hover{ background:var(--red-bg); }
+  .ft-btn.tiny{ padding:4px 10px; font-size:11px; }
+
+  .ft-form-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:14px;}
+  .ft-field label{ font-size:11px; font-weight:600; color:var(--grey-text); display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.3px;}
+  .ft-field input, .ft-field select, .ft-field textarea{
+    width:100%; padding:8px 10px; border:1px solid var(--grey-line); border-radius:7px;
+    font-family:'Inter',sans-serif; font-size:13px; color:var(--navy); background:var(--white);
+  }
+  .ft-field input:focus, .ft-field select:focus, .ft-field textarea:focus{ outline:2px solid var(--cyan); outline-offset:1px; }
+  .ft-field textarea{ resize:vertical; min-height:44px; }
+  .ft-form-box{ background:var(--grey-bg); border:1px solid var(--grey-line); border-radius:10px; padding:16px; margin-bottom:20px;}
+
+  .ft-toggle-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .ft-toggle{
+    padding:6px 12px; border-radius:7px; border:1px solid var(--grey-line);
+    font-size:12px; cursor:pointer; background:white; color:var(--grey-text); font-weight:600;
+  }
+  .ft-toggle.on{ background:var(--green-bg); border-color:var(--green); color:var(--green); }
+
+  .ft-empty{ text-align:center; padding:40px 20px; color:var(--grey-text); font-size:13px; }
+  .ft-filter-row{ display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;}
+  .ft-filter-row select{ padding:7px 10px; border-radius:7px; border:1px solid var(--grey-line); font-size:12.5px; }
+  .ft-note{ font-size:11.5px; color:var(--grey-text); margin-top:6px; }
+  .ft-footer-note{ font-size:11px; color:var(--grey-text); padding:10px 24px; border-top:1px solid var(--grey-line); background:var(--grey-bg);}
+  .ft-loading{ text-align:center; padding:60px; color:var(--grey-text); }
+</style>
+</head>
+<body>
+
+<div class="ft-root" id="ft-root">
+  <div class="ft-header">
+    <div>
+      <h1>Forecast &amp; RTC <span class="accent">Tracker</span></h1>
+      <div class="sub">Equipo Comercial &middot; SEIDOR M&eacute;xico</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+      <div class="sub" id="ft-updated-at">Cargando...</div>
+      <div class="ft-header-actions">
+        <button id="ft-export-btn" title="Descarga un archivo .json con todos los datos">⬇ Exportar</button>
+        <button id="ft-import-btn" title="Carga un archivo .json exportado previamente">⬆ Importar</button>
+        <input type="file" id="ft-import-file" accept="application/json" style="display:none;">
+      </div>
+    </div>
+  </div>
+  <div class="ft-tabs">
+    <div class="ft-tab active" data-tab="dashboard">Dashboard</div>
+    <div class="ft-tab" data-tab="oportunidades">Oportunidades</div>
+    <div class="ft-tab" data-tab="cuotas">Cuotas &amp; Equipo</div>
+    <div class="ft-tab" data-tab="ayuda">Gu&iacute;a</div>
+  </div>
+  <div class="ft-body" id="ft-body">
+    <div class="ft-loading">Cargando datos guardados...</div>
+  </div>
+  <div class="ft-footer-note" id="ft-footer-note"></div>
+</div>
+
+<script>
+(function(){
+  // ============================================================================
+  // CONFIGURACIÓN DEL BACKEND — edita estas dos líneas después de desplegar
+  // tu Cloudflare Worker (ver worker.js para las instrucciones de setup).
+  // ============================================================================
+  const APP_CONFIG = {
+    API_URL: "https://forecast-tracker.samuel-aiza.workers.dev/api/data",
+    API_KEY: "9x4WLnEMQcf3PokGcoR4BlbZztwHmrtqfB06lDyQfQk"
+  };
+  // ============================================================================
+
+  const CONFIG_KEY = 'seidor-forecast-config';
+  const DEALS_KEY = 'seidor-forecast-deals';
+
+  const GSG_STAGES = ["F - Prospección","E - Calificación","D - Descubrimiento","C - Propuesta","B - Negociación","A - Cierre"];
+  const FCATS = ["Commit","Best Case","Pipeline","Omitted"];
+  const RESULTS = ["Abierta","Ganada","Perdida"];
+  const STALL_DAYS = 15;
+
+  let state = {
+    config: { reps: ["Rep 1","Rep 2","Rep 3","Rep 4","Rep 5"], quotas: {} },
+    deals: [],
+    activeTab: 'dashboard',
+    editingId: null
+  };
+
+  const root = document.getElementById('ft-root');
+  const body = document.getElementById('ft-body');
+  const updatedAtEl = document.getElementById('ft-updated-at');
+  const footerNote = document.getElementById('ft-footer-note');
+
+  function uid(){ return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function money(n){
+    n = Number(n)||0;
+    return '$' + n.toLocaleString('es-MX', {maximumFractionDigits:0});
+  }
+  function pct(n){
+    if (n === null || n === undefined || isNaN(n)) return 'n/a';
+    return (n*100).toFixed(1) + '%';
+  }
+  function daysSince(dateStr){
+    if(!dateStr) return null;
+    const d = new Date(dateStr + 'T00:00:00');
+    const now = new Date();
+    now.setHours(0,0,0,0);
+    return Math.round((now - d) / 86400000);
+  }
+  function monthKey(dateStr){
+    if(!dateStr) return null;
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+  function quarterKey(dateStr){
+    if(!dateStr) return null;
+    const d = new Date(dateStr + 'T00:00:00');
+    const q = Math.floor(d.getMonth()/3) + 1;
+    return 'Q' + q + '-' + d.getFullYear();
+  }
+  function currentMonthKey(){
+    const now = new Date();
+    return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  }
+  function currentQuarterKey(){
+    const now = new Date();
+    const q = Math.floor(now.getMonth()/3) + 1;
+    return 'Q' + q + '-' + now.getFullYear();
+  }
+  function monthLabel(){
+    const now = new Date();
+    return now.toLocaleDateString('es-MX', {month:'short', year:'numeric'});
+  }
+
+  let isConfigured = APP_CONFIG.API_URL.indexOf('REEMPLAZA') === -1;
+  let isOnline = true;
+
+  async function loadAll(){
+    if(!isConfigured){
+      // Aún no se configuró el backend: usa localStorage como modo de prueba local
+      try{
+        const c = localStorage.getItem(CONFIG_KEY);
+        if(c) state.config = JSON.parse(c);
+      }catch(e){}
+      try{
+        const d = localStorage.getItem(DEALS_KEY);
+        if(d) state.deals = JSON.parse(d);
+      }catch(e){ state.deals = []; }
+      render();
+      return;
+    }
+    try{
+      const res = await fetch(APP_CONFIG.API_URL, { method: 'GET' });
+      if(!res.ok) throw new Error('Respuesta no OK: ' + res.status);
+      const data = await res.json();
+      state.config = data.config || state.config;
+      state.deals = data.deals || [];
+      isOnline = true;
+    }catch(e){
+      console.error('No se pudo cargar del backend, usando copia local en caché', e);
+      isOnline = false;
+      try{
+        const c = localStorage.getItem(CONFIG_KEY);
+        if(c) state.config = JSON.parse(c);
+        const d = localStorage.getItem(DEALS_KEY);
+        if(d) state.deals = JSON.parse(d);
+      }catch(err){}
+    }
+    render();
+  }
+
+  async function pushToBackend(){
+    if(!isConfigured) return true;
+    try{
+      const res = await fetch(APP_CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': APP_CONFIG.API_KEY },
+        body: JSON.stringify({ config: state.config, deals: state.deals })
+      });
+      if(!res.ok){
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.error || ('HTTP ' + res.status));
+      }
+      isOnline = true;
+      return true;
+    }catch(e){
+      console.error('Error guardando en backend', e);
+      isOnline = false;
+      alert('No se pudo guardar en el servidor compartido (' + e.message + '). Tus cambios se guardaron solo en este navegador por ahora — vuelve a intentar cuando tengas conexión.');
+      return false;
+    }
+  }
+
+  async function saveConfig(){
+    try{ localStorage.setItem(CONFIG_KEY, JSON.stringify(state.config)); }catch(e){}
+    await pushToBackend();
+  }
+  async function saveDeals(){
+    try{ localStorage.setItem(DEALS_KEY, JSON.stringify(state.deals)); }catch(e){}
+    await pushToBackend();
+  }
+
+  function exportData(){
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      config: state.config,
+      deals: state.deals
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'forecast-tracker-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importData(file){
+    try{
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      if(!payload.deals || !payload.config) throw new Error('Formato inválido');
+      const mode = confirm(
+        'Importar archivo: presiona "Aceptar" para REEMPLAZAR todos los datos actuales con los del archivo.\n' +
+        'Presiona "Cancelar" para FUSIONAR (agrega las oportunidades del archivo a las que ya tienes, sin borrar nada).'
+      );
+      if(mode){
+        state.config = payload.config;
+        state.deals = payload.deals;
+      } else {
+        const existingIds = new Set(state.deals.map(d=>d.id));
+        payload.deals.forEach(d=>{ if(!existingIds.has(d.id)) state.deals.push(d); });
+        payload.config.reps.forEach(r=>{ if(!state.config.reps.includes(r)) state.config.reps.push(r); });
+        state.config.quotas = Object.assign({}, payload.config.quotas, state.config.quotas);
+      }
+      await saveConfig();
+      await saveDeals();
+      state.activeTab = 'dashboard';
+      document.querySelectorAll('.ft-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==='dashboard'));
+      render();
+      alert('Datos importados correctamente.');
+    }catch(e){
+      console.error(e);
+      alert('No se pudo leer el archivo. Asegúrate de que sea un backup exportado desde este mismo tracker.');
+    }
+  }
+
+  document.getElementById('ft-export-btn').addEventListener('click', exportData);
+  document.getElementById('ft-import-btn').addEventListener('click', ()=> document.getElementById('ft-import-file').click());
+  document.getElementById('ft-import-file').addEventListener('change', (e)=>{
+    if(e.target.files[0]) importData(e.target.files[0]);
+    e.target.value = '';
+  });
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('.ft-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.ft-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      state.activeTab = tab.dataset.tab;
+      state.editingId = null;
+      render();
+    });
+  });
+
+  // ---------- Computations ----------
+  function computeRepStats(rep){
+    const mKey = currentMonthKey(), qKey = currentQuarterKey();
+    const repDeals = state.deals.filter(d=>d.rep===rep);
+    const commitMes = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const bestMes = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const pipeline = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Pipeline').reduce((s,d)=>s+Number(d.monto||0),0);
+    const ganadoMes = repDeals.filter(d=>d.resultado==='Ganada' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const commitTrim = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const bestTrim = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const ganadoTrim = repDeals.filter(d=>d.resultado==='Ganada' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const stalled = repDeals.filter(d=>d.resultado==='Abierta' && daysSince(d.ultimaActividad) !== null && daysSince(d.ultimaActividad) > STALL_DAYS).length;
+    const q = state.config.quotas[rep] || {mensual:0, trimestral:0};
+    return {
+      commitMes, bestMes, totalMes: commitMes+bestMes, ganadoMes,
+      commitTrim, bestTrim, totalTrim: commitTrim+bestTrim, ganadoTrim,
+      pipeline, stalled,
+      cuotaMensual: Number(q.mensual||0), cuotaTrimestral: Number(q.trimestral||0),
+      pctMes: q.mensual ? (commitMes+bestMes+ganadoMes)/q.mensual : null,
+      pctTrim: q.trimestral ? (commitTrim+bestTrim+ganadoTrim)/q.trimestral : null,
+      coverage: q.mensual ? pipeline/q.mensual : null
+    };
+  }
+
+  function statusColor(p){
+    if(p===null) return {bg:'#EEE', fg:'#888'};
+    if(p<0.7) return {bg:'var(--red-bg)', fg:'var(--red)'};
+    if(p<1) return {bg:'var(--amber-bg)', fg:'var(--amber)'};
+    return {bg:'var(--green-bg)', fg:'var(--green)'};
+  }
+
+  // ---------- Render ----------
+  function render(){
+    updatedAtEl.textContent = 'Actualizado: ' + new Date().toLocaleString('es-MX', {dateStyle:'short', timeStyle:'short'});
+    if(!isConfigured){
+      footerNote.innerHTML = '⚠️ <strong>Modo de prueba local:</strong> aún no configuraste el Worker de Cloudflare (APP_CONFIG al inicio del script). Mientras tanto, los datos solo se guardan en este navegador. Ve worker.js para las instrucciones.';
+    } else if(!isOnline){
+      footerNote.innerHTML = '⚠️ <strong>Sin conexión con el servidor compartido.</strong> Tus cambios se guardaron solo en este navegador. Revisa tu API_URL/API_KEY o tu conexión, y vuelve a intentar.';
+    } else {
+      footerNote.textContent = 'Conectado al servidor compartido — todo lo que se registra aquí lo ven todos los reps que abran este sitio. Los botones Exportar/Importar siguen disponibles como respaldo.';
+    }
+    if(state.activeTab==='dashboard') renderDashboard();
+    else if(state.activeTab==='oportunidades') renderOportunidades();
+    else if(state.activeTab==='cuotas') renderCuotas();
+    else renderAyuda();
+  }
+
+  function renderDashboard(){
+    const reps = state.config.reps;
+    const mKey = currentMonthKey(), qKey = currentQuarterKey();
+
+    const teamCommitMes = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamBestMes = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamGanadoMes = state.deals.filter(d=>d.resultado==='Ganada' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamQuotaMes = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).mensual||0),0);
+    const teamPctMes = teamQuotaMes ? (teamCommitMes+teamBestMes+teamGanadoMes)/teamQuotaMes : null;
+
+    const teamCommitTrim = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamBestTrim = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamGanadoTrim = state.deals.filter(d=>d.resultado==='Ganada' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
+    const teamQuotaTrim = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).trimestral||0),0);
+    const teamPctTrim = teamQuotaTrim ? (teamCommitTrim+teamBestTrim+teamGanadoTrim)/teamQuotaTrim : null;
+
+    const cMes = statusColor(teamPctMes);
+    const cTrim = statusColor(teamPctTrim);
+
+    const stalledDeals = state.deals.filter(d=>d.resultado==='Abierta' && daysSince(d.ultimaActividad)!==null && daysSince(d.ultimaActividad)>STALL_DAYS)
+      .sort((a,b)=>daysSince(b.ultimaActividad)-daysSince(a.ultimaActividad));
+
+    let html = '';
+    html += `<div class="ft-section-title"><span class="bar"></span>Resumen del mes en curso (${monthLabel()})</div>`;
+    html += `<div class="ft-grid">
+      <div class="ft-card"><div class="label">Commit</div><div class="value">${money(teamCommitMes)}</div></div>
+      <div class="ft-card"><div class="label">Best Case</div><div class="value">${money(teamBestMes)}</div></div>
+      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(teamGanadoMes)}</div></div>
+      <div class="ft-card"><div class="label">Cuota del equipo</div><div class="value">${money(teamQuotaMes)}</div></div>
+      <div class="ft-card">
+        <div class="label">% Cuota cubierto</div>
+        <div class="value" style="color:${cMes.fg}">${pct(teamPctMes)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(teamPctMes||0)*100)}%; background:${cMes.fg}"></div></div>
+      </div>
+    </div>`;
+
+    html += `<div class="ft-section-title"><span class="bar"></span>Resumen del trimestre en curso (${qKey})</div>`;
+    html += `<div class="ft-grid">
+      <div class="ft-card"><div class="label">Commit</div><div class="value">${money(teamCommitTrim)}</div></div>
+      <div class="ft-card"><div class="label">Best Case</div><div class="value">${money(teamBestTrim)}</div></div>
+      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(teamGanadoTrim)}</div></div>
+      <div class="ft-card"><div class="label">Cuota del equipo</div><div class="value">${money(teamQuotaTrim)}</div></div>
+      <div class="ft-card">
+        <div class="label">% Cuota cubierto</div>
+        <div class="value" style="color:${cTrim.fg}">${pct(teamPctTrim)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(teamPctTrim||0)*100)}%; background:${cTrim.fg}"></div></div>
+      </div>
+    </div>`;
+
+    html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (mes actual)</div>`;
+    html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+      <th>Rep</th><th>Cuota mensual</th><th>Commit</th><th>Best Case</th><th>Pipeline</th>
+      <th>Total esperado</th><th>% Cuota</th><th>Coverage</th><th>Estancadas</th>
+    </tr></thead><tbody>`;
+    reps.forEach(rep=>{
+      const s = computeRepStats(rep);
+      const c = statusColor(s.pctMes);
+      html += `<tr>
+        <td><strong>${rep}</strong></td>
+        <td>${money(s.cuotaMensual)}</td>
+        <td>${money(s.commitMes)}</td>
+        <td>${money(s.bestMes)}</td>
+        <td>${money(s.pipeline)}</td>
+        <td>${money(s.totalMes)}</td>
+        <td><span class="badge" style="background:${c.bg}; color:${c.fg}">${pct(s.pctMes)}</span></td>
+        <td>${s.coverage===null?'n/a':s.coverage.toFixed(1)+'x'}</td>
+        <td>${s.stalled>0 ? `<span class="badge badge-stalled">${s.stalled} ⚠️</span>` : '0'}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+
+    html += `<div class="ft-section-title"><span class="bar"></span>Oportunidades estancadas (&gt;${STALL_DAYS} d&iacute;as sin actividad)</div>`;
+    if(stalledDeals.length===0){
+      html += `<div class="ft-empty">Ninguna oportunidad abierta lleva más de ${STALL_DAYS} días sin actividad. 👍</div>`;
+    } else {
+      html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+        <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>D&iacute;as sin actividad</th><th>Pr&oacute;ximo paso (RTC)</th>
+      </tr></thead><tbody>`;
+      stalledDeals.forEach(d=>{
+        html += `<tr>
+          <td>${d.rep}</td><td>${d.cliente}</td><td>${d.oportunidad}</td>
+          <td><span class="badge badge-stalled">${daysSince(d.ultimaActividad)} d&iacute;as</span></td>
+          <td>${d.rtc||'<em>sin definir</em>'}</td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+
+    body.innerHTML = html;
+  }
+
+  function fcatBadge(fcat){
+    const map = {'Commit':'badge-commit','Best Case':'badge-bestcase','Pipeline':'badge-pipeline','Omitted':'badge-omitted'};
+    return `<span class="badge ${map[fcat]||''}">${fcat}</span>`;
+  }
+  function resultBadge(r){
+    const map = {'Abierta':'badge-abierta','Ganada':'badge-ganada','Perdida':'badge-perdida'};
+    return `<span class="badge ${map[r]||''}">${r}</span>`;
+  }
+
+  function renderOportunidades(){
+    const editing = state.editingId ? state.deals.find(d=>d.id===state.editingId) : null;
+    const reps = state.config.reps;
+
+    let html = '';
+    html += `<div class="ft-form-box">
+      <div class="ft-section-title" style="margin-top:0"><span class="bar"></span>${editing?'Editar oportunidad':'Nueva oportunidad'}</div>
+      <form id="ft-deal-form">
+        <div class="ft-form-grid">
+          <div class="ft-field"><label>Rep</label>
+            <select name="rep" required>${reps.map(r=>`<option value="${r}" ${editing&&editing.rep===r?'selected':''}>${r}</option>`).join('')}</select>
+          </div>
+          <div class="ft-field"><label>Cliente</label><input name="cliente" required value="${editing?editing.cliente:''}"></div>
+          <div class="ft-field"><label>Oportunidad</label><input name="oportunidad" required value="${editing?editing.oportunidad:''}"></div>
+          <div class="ft-field"><label>Etapa GSG</label>
+            <select name="etapa">${GSG_STAGES.map(s=>`<option ${editing&&editing.etapa===s?'selected':''}>${s}</option>`).join('')}</select>
+          </div>
+          <div class="ft-field"><label>Forecast Category</label>
+            <select name="fcat">${FCATS.map(s=>`<option ${editing&&editing.fcat===s?'selected':''}>${s}</option>`).join('')}</select>
+          </div>
+          <div class="ft-field"><label>Monto (MXN)</label><input type="number" name="monto" min="0" step="1000" required value="${editing?editing.monto:''}"></div>
+          <div class="ft-field"><label>Fecha cierre estimada</label><input type="date" name="fecha" required value="${editing?editing.fecha:''}"></div>
+          <div class="ft-field"><label>Fecha pr&oacute;ximo paso</label><input type="date" name="fechaProximoPaso" value="${editing?(editing.fechaProximoPaso||''):''}"></div>
+          <div class="ft-field"><label>&Uacute;ltima actividad</label><input type="date" name="ultimaActividad" value="${editing?(editing.ultimaActividad||''):''}"></div>
+          <div class="ft-field"><label>Resultado</label>
+            <select name="resultado">${RESULTS.map(s=>`<option ${editing&&editing.resultado===s?'selected':''}>${s}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="ft-field" style="margin-bottom:12px;"><label>RTC &mdash; Pr&oacute;ximo paso</label><textarea name="rtc">${editing?editing.rtc||'':''}</textarea></div>
+        <div class="ft-field" style="margin-bottom:12px;">
+          <label>MEDDPICC m&iacute;nimo</label>
+          <div class="ft-toggle-row">
+            <div class="ft-toggle ${editing&&editing.eb?'on':''}" data-field="eb">Economic Buyer confirmado</div>
+            <div class="ft-toggle ${editing&&editing.champion?'on':''}" data-field="champion">Champion confirmado</div>
+            <div class="ft-toggle ${editing&&editing.pain?'on':''}" data-field="pain">Dolor/Pain documentado</div>
+          </div>
+        </div>
+        <div class="ft-field" style="margin-bottom:14px;"><label>Comentarios</label><textarea name="comentarios">${editing?editing.comentarios||'':''}</textarea></div>
+        <button type="submit" class="ft-btn">${editing?'Guardar cambios':'Agregar oportunidad'}</button>
+        ${editing?'<button type="button" class="ft-btn secondary" id="ft-cancel-edit" style="margin-left:8px;">Cancelar</button>':''}
+      </form>
+    </div>`;
+
+    html += `<div class="ft-filter-row">
+      <select id="ft-filter-rep"><option value="">Todos los reps</option>${reps.map(r=>`<option>${r}</option>`).join('')}</select>
+      <select id="ft-filter-result"><option value="">Todos los resultados</option>${RESULTS.map(r=>`<option>${r}</option>`).join('')}</select>
+      <span class="ft-note">${state.deals.length} oportunidad(es) registradas</span>
+    </div>`;
+
+    const filterRep = document.getElementById('ft-filter-rep-val') ? document.getElementById('ft-filter-rep-val').value : '';
+    html += `<div class="ft-table-wrap"><table class="ft-table" id="ft-deals-table"><thead><tr>
+      <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Monto</th>
+      <th>Cierre</th><th>D&iacute;as s/actividad</th><th>Resultado</th><th></th>
+    </tr></thead><tbody>
+    ${state.deals.length===0 ? `<tr><td colspan="10" class="ft-empty">Sin oportunidades registradas todav&iacute;a. Agrega la primera arriba.</td></tr>` :
+      state.deals.map(d=>{
+        const ds = daysSince(d.ultimaActividad);
+        const stalled = d.resultado==='Abierta' && ds!==null && ds>STALL_DAYS;
+        return `<tr data-rep="${d.rep}" data-result="${d.resultado}">
+          <td>${d.rep}</td><td>${d.cliente}</td><td>${d.oportunidad}</td>
+          <td>${d.etapa}</td><td>${fcatBadge(d.fcat)}</td><td>${money(d.monto)}</td>
+          <td>${d.fecha}</td>
+          <td>${ds===null?'—':(stalled?`<span class="badge badge-stalled">${ds} ⚠️</span>`:ds)}</td>
+          <td>${resultBadge(d.resultado)}</td>
+          <td style="white-space:nowrap;">
+            <button class="ft-btn secondary tiny" data-edit="${d.id}">Editar</button>
+            <button class="ft-btn danger" data-del="${d.id}">Borrar</button>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>`;
+
+    body.innerHTML = html;
+
+    document.getElementById('ft-deal-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const deal = {
+        id: editing ? editing.id : uid(),
+        rep: fd.get('rep'), cliente: fd.get('cliente'), oportunidad: fd.get('oportunidad'),
+        etapa: fd.get('etapa'), fcat: fd.get('fcat'), monto: Number(fd.get('monto')||0),
+        fecha: fd.get('fecha'), fechaProximoPaso: fd.get('fechaProximoPaso'),
+        ultimaActividad: fd.get('ultimaActividad'), resultado: fd.get('resultado'),
+        rtc: fd.get('rtc'), comentarios: fd.get('comentarios'),
+        eb: e.target.querySelector('[data-field="eb"]').classList.contains('on'),
+        champion: e.target.querySelector('[data-field="champion"]').classList.contains('on'),
+        pain: e.target.querySelector('[data-field="pain"]').classList.contains('on'),
+      };
+      if(editing){
+        const idx = state.deals.findIndex(d=>d.id===editing.id);
+        state.deals[idx] = deal;
+      } else {
+        state.deals.push(deal);
+      }
+      state.editingId = null;
+      await saveDeals();
+      render();
+    });
+
+    document.querySelectorAll('[data-field]').forEach(t=>{
+      t.addEventListener('click', ()=> t.classList.toggle('on'));
+    });
+
+    if(editing){
+      const cancelBtn = document.getElementById('ft-cancel-edit');
+      if(cancelBtn) cancelBtn.addEventListener('click', ()=>{ state.editingId=null; render(); });
+    }
+
+    document.querySelectorAll('[data-edit]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ state.editingId = btn.dataset.edit; render(); window.scrollTo(0,0); });
+    });
+    document.querySelectorAll('[data-del]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        if(confirm('¿Borrar esta oportunidad? Esta acción no se puede deshacer.')){
+          state.deals = state.deals.filter(d=>d.id!==btn.dataset.del);
+          await saveDeals();
+          render();
+        }
+      });
+    });
+
+    function applyFilters(){
+      const repVal = document.getElementById('ft-filter-rep').value;
+      const resVal = document.getElementById('ft-filter-result').value;
+      document.querySelectorAll('#ft-deals-table tbody tr[data-rep]').forEach(tr=>{
+        const okRep = !repVal || tr.dataset.rep===repVal;
+        const okRes = !resVal || tr.dataset.result===resVal;
+        tr.style.display = (okRep && okRes) ? '' : 'none';
+      });
+    }
+    document.getElementById('ft-filter-rep').addEventListener('change', applyFilters);
+    document.getElementById('ft-filter-result').addEventListener('change', applyFilters);
+  }
+
+  function renderCuotas(){
+    const reps = state.config.reps;
+    let html = `<div class="ft-section-title" style="margin-top:0"><span class="bar"></span>Reps y cuotas</div>`;
+    html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+      <th>Rep</th><th>Cuota mensual (MXN)</th><th>Cuota trimestral (MXN)</th><th></th>
+    </tr></thead><tbody>`;
+    reps.forEach((rep, i)=>{
+      const q = state.config.quotas[rep] || {mensual:0, trimestral:0};
+      html += `<tr>
+        <td><input class="ft-rep-name" data-idx="${i}" value="${rep}" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
+        <td><input type="number" class="ft-quota-mes" data-rep="${rep}" value="${q.mensual||0}" min="0" step="1000" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
+        <td><input type="number" class="ft-quota-trim" data-rep="${rep}" value="${q.trimestral||0}" min="0" step="1000" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
+        <td><button class="ft-btn danger" data-remove-rep="${rep}">Quitar</button></td>
+      </tr>`;
+    });
+    const totMes = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).mensual||0),0);
+    const totTrim = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).trimestral||0),0);
+    html += `<tr style="background:var(--grey-bg); font-weight:600;"><td>Total equipo</td><td>${money(totMes)}</td><td>${money(totTrim)}</td><td></td></tr>`;
+    html += `</tbody></table></div>`;
+    html += `<div style="margin-top:14px; display:flex; gap:10px;">
+      <button class="ft-btn secondary" id="ft-add-rep">+ Agregar rep</button>
+      <button class="ft-btn" id="ft-save-cuotas">Guardar cambios</button>
+    </div>`;
+    html += `<div class="ft-note">Los nombres de rep deben coincidir exactamente con los que uses en "Oportunidades" para que el Dashboard sume correctamente.</div>`;
+
+    body.innerHTML = html;
+
+    document.getElementById('ft-add-rep').addEventListener('click', async ()=>{
+      let n = 1;
+      let name = 'Nuevo Rep';
+      while(state.config.reps.includes(name)){ n++; name = 'Nuevo Rep ' + n; }
+      state.config.reps.push(name);
+      state.config.quotas[name] = {mensual:0, trimestral:0};
+      await saveConfig();
+      render();
+    });
+
+    document.querySelectorAll('[data-remove-rep]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const rep = btn.dataset.removeRep;
+        const hasDeals = state.deals.some(d=>d.rep===rep);
+        if(hasDeals && !confirm(`${rep} tiene oportunidades registradas. ¿Quitarlo de la lista de reps de todos modos? Sus oportunidades no se borrarán pero dejarán de sumar en el Dashboard.`)) return;
+        state.config.reps = state.config.reps.filter(r=>r!==rep);
+        delete state.config.quotas[rep];
+        await saveConfig();
+        render();
+      });
+    });
+
+    document.getElementById('ft-save-cuotas').addEventListener('click', async ()=>{
+      const newReps = [];
+      document.querySelectorAll('.ft-rep-name').forEach(input=>{
+        newReps.push(input.value.trim() || ('Rep ' + (Number(input.dataset.idx)+1)));
+      });
+      const oldReps = state.config.reps;
+      const newQuotas = {};
+      document.querySelectorAll('.ft-quota-mes').forEach((input, i)=>{
+        const rep = newReps[i];
+        newQuotas[rep] = newQuotas[rep] || {};
+        newQuotas[rep].mensual = Number(input.value||0);
+      });
+      document.querySelectorAll('.ft-quota-trim').forEach((input, i)=>{
+        const rep = newReps[i];
+        newQuotas[rep] = newQuotas[rep] || {};
+        newQuotas[rep].trimestral = Number(input.value||0);
+      });
+      // rename reps in existing deals if names changed
+      oldReps.forEach((oldRep, i)=>{
+        const newRep = newReps[i];
+        if(newRep && newRep !== oldRep){
+          state.deals.forEach(d=>{ if(d.rep===oldRep) d.rep = newRep; });
+        }
+      });
+      state.config.reps = newReps;
+      state.config.quotas = newQuotas;
+      await saveConfig();
+      await saveDeals();
+      render();
+    });
+  }
+
+  function renderAyuda(){
+    body.innerHTML = `
+      <div class="ft-section-title" style="margin-top:0"><span class="bar"></span>¿Para qué sirve esto?</div>
+      <p style="font-size:13px; line-height:1.6; color:var(--navy);">Mientras HubSpot no tenga forecast categories, campos obligatorios ni criterios de salida por etapa,
+      este tablero es la fuente de verdad temporal del forecast del equipo. Cada rep captura sus oportunidades abiertas
+      en la pestaña <strong>Oportunidades</strong>. El <strong>Dashboard</strong> se recalcula solo.</p>
+
+      <div class="ft-section-title"><span class="bar"></span>Definiciones de Forecast Category</div>
+      <p style="font-size:13px; line-height:1.7;">
+      ${fcatBadge('Commit')} certeza alta. RTC documentado, fecha de cierre creíble, Economic Buyer y Champion confirmados.<br>
+      ${fcatBadge('Best Case')} probable pero con riesgo (falta 1 elemento de MEDDPICC o la fecha es optimista).<br>
+      ${fcatBadge('Pipeline')} en desarrollo, etapa temprana, aún no calificado a fondo.<br>
+      ${fcatBadge('Omitted')} no cuenta para el mes/trimestre actual.
+      </p>
+
+      <div class="ft-section-title"><span class="bar"></span>Regla para el forecast call</div>
+      <p style="font-size:13px; line-height:1.6;">Solo cuenta como <strong>Commit</strong> lo que tiene RTC documentado (próximo paso + fecha),
+      Economic Buyer y Champion confirmados. Si no los tiene, se baja a Best Case o Pipeline — no se vale forecast "de palabra".</p>
+
+      <div class="ft-section-title"><span class="bar"></span>¿Qué es "Estancado"?</div>
+      <p style="font-size:13px; line-height:1.6;">Una oportunidad abierta se marca automáticamente ${`<span class="badge badge-stalled">⚠️</span>`} si pasaron más de
+      ${STALL_DAYS} días desde su última actividad registrada. Esto expone el "dice cualquier cosa" antes del forecast call.</p>
+
+      <div class="ft-section-title"><span class="bar"></span>Dónde viven los datos</div>
+      <p style="font-size:13px; line-height:1.6;">Este sitio guarda la información en un servidor compartido (Cloudflare Worker + KV), gratuito para este tamaño de equipo.
+      Cualquier persona que abra el link ve y edita los mismos datos, sin pasos manuales.</p>
+      <p style="font-size:12.5px; color:var(--grey-text); line-height:1.6;">Si en algún momento el sitio no logra conectarse al servidor (por ejemplo, sin internet),
+      tus cambios se guardan temporalmente solo en tu navegador y verás una advertencia amarilla abajo — reintenta cuando tengas conexión.
+      Los botones <strong>⬇ Exportar</strong> / <strong>⬆ Importar</strong> siguen ahí como respaldo manual adicional.</p>
+
+      <div class="ft-section-title"><span class="bar"></span>Nota</div>
+      <p style="font-size:13px; line-height:1.6; color:var(--grey-text);">Este tablero es un puente. Cuando puedas reconfigurar HubSpot, esta misma lógica
+      (forecast category, RTC, MEDDPICC mínimo, aging) debería migrarse a propiedades nativas para no mantener dos sistemas en paralelo.</p>
+    `;
+  }
+
+  loadAll();
+})();
+</script>
+</body>
+</html>
