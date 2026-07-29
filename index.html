@@ -976,7 +976,7 @@
           <div class="ft-field"><label>Tipo de oportunidad</label>
             <select name="tipo">${TIPOS.map(t=>`<option ${editing&&editing.tipo===t?'selected':''}>${t}</option>`).join('')}</select>
           </div>
-          <div class="ft-field"><label>Monto (USD)</label><input type="number" name="monto" min="0" step="100" required value="${editing?editing.monto:''}"></div>
+          <div class="ft-field"><label>Monto (USD)</label><input type="number" name="monto" min="0" step="any" required value="${editing?editing.monto:''}"></div>
           <div class="ft-field"><label>Fecha cierre estimada</label><input type="date" name="fecha" required value="${editing?editing.fecha:''}"></div>
           <div class="ft-field"><label>Fecha pr&oacute;ximo paso</label><input type="date" name="fechaProximoPaso" value="${editing?(editing.fechaProximoPaso||''):''}"></div>
           <div class="ft-field"><label>Resultado</label>
@@ -1160,11 +1160,11 @@
       const inputStyle = "border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:110px;";
       html += `<tr>
         <td><input class="ft-rep-name" data-idx="${i}" value="${rep}" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:150px;"></td>
-        <td><input type="number" class="ft-quota-anual" data-rep="${rep}" value="${q.anual||0}" min="0" step="1000" style="${inputStyle} width:130px;"></td>
-        <td><input type="number" class="ft-quota-q1" data-rep="${rep}" value="${q.q1||0}" min="0" step="500" style="${inputStyle}"></td>
-        <td><input type="number" class="ft-quota-q2" data-rep="${rep}" value="${q.q2||0}" min="0" step="500" style="${inputStyle}"></td>
-        <td><input type="number" class="ft-quota-q3" data-rep="${rep}" value="${q.q3||0}" min="0" step="500" style="${inputStyle}"></td>
-        <td><input type="number" class="ft-quota-q4" data-rep="${rep}" value="${q.q4||0}" min="0" step="500" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-anual" data-rep="${rep}" value="${q.anual||0}" min="0" step="any" style="${inputStyle} width:130px;"></td>
+        <td><input type="number" class="ft-quota-q1" data-rep="${rep}" value="${q.q1||0}" min="0" step="any" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q2" data-rep="${rep}" value="${q.q2||0}" min="0" step="any" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q3" data-rep="${rep}" value="${q.q3||0}" min="0" step="any" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q4" data-rep="${rep}" value="${q.q4||0}" min="0" step="any" style="${inputStyle}"></td>
         <td style="white-space:nowrap;">
           <button class="ft-btn secondary tiny" data-split-rep="${rep}" title="Repartir cuota anual entre Q1-Q4 usando la curva 15/30/30/25%">Aplicar 15/30/30/25%</button>
           <button class="ft-btn danger" data-remove-rep="${rep}">Quitar</button>
