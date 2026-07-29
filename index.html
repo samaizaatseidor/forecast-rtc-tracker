@@ -276,7 +276,9 @@
     activeTab: 'dashboard',
     editingId: null,
     dashboardScope: '__team__',
-    formActivities: []
+    formActivities: [],
+    oppSort: { field: 'fecha', dir: 'asc' },
+    oppFilters: { rep: '', result: '', quarter: '', fcat: '' }
   };
 
   const root = document.getElementById('ft-root');
@@ -296,6 +298,13 @@
   function todayISO(){
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function formatDateDisplay(iso){
+    if(!iso) return '—';
+    const parts = iso.split('-');
+    if(parts.length !== 3) return iso;
+    const [y,m,d] = parts;
+    return `${d}/${m}/${y}`;
   }
   function daysSince(dateStr){
     if(!dateStr) return null;
@@ -551,14 +560,17 @@
   function repAllTimeStats(rep){
     const deals = filterDealsByRep(rep);
     const openDeals = deals.filter(d=>d.resultado==='Abierta');
-    const upsideAll = openDeals.filter(d=>d.fcat==='Top Upside'||d.fcat==='Upside').reduce((s,d)=>s+Number(d.monto||0),0);
     const stalled = openDeals.filter(d=>{ const ds = daysSince(lastActivityDate(d)); return ds!==null && ds>STALL_DAYS; }).length;
     const overdue = openDeals.filter(d=>hasOverduePendingActivity(d)).length;
     const ganadas = deals.filter(d=>d.resultado==='Ganada').length;
     const cuotaMensual = getCuotaMensualEstimate(rep, currentMonthKey());
     const cuotaTrimestral = getCuotaTrimestral(rep, currentQuarterKey());
     const cuotaAnual = getCuotaAnual(rep);
-    return { upsideAll, stalled, overdue, ganadas, cuotaMensual, cuotaTrimestral, cuotaAnual };
+    return { stalled, overdue, ganadas, cuotaMensual, cuotaTrimestral, cuotaAnual };
+  }
+  function periodUpside(deals, periodKeyFn, periodVal){
+    return deals.filter(d=>d.resultado==='Abierta' && (d.fcat==='Top Upside'||d.fcat==='Upside') && periodKeyFn(d.fecha)===periodVal)
+      .reduce((s,d)=>s+Number(d.monto||0),0);
   }
 
   function tipoBreakdown(deals){
@@ -633,9 +645,13 @@
       cuotaAnual = reps.reduce((s,r)=>s+getCuotaAnual(r),0);
     }
     const pctMes = cuotaMes ? (sMes.commit+sMes.probable+sMes.ganado)/cuotaMes : null;
+    const pctMesAlcanzado = cuotaMes ? sMes.ganado/cuotaMes : null;
     const pctTrim = cuotaTrim ? (sTrim.commit+sTrim.probable+sTrim.ganado)/cuotaTrim : null;
+    const pctTrimAlcanzado = cuotaTrim ? sTrim.ganado/cuotaTrim : null;
     const pctAnual = cuotaAnual ? sYear.ganado/cuotaAnual : null;
-    const cMes = statusColor(pctMes), cTrim = statusColor(pctTrim), cAnual = statusColor(pctAnual);
+    const cMes = statusColor(pctMes), cMesA = statusColor(pctMesAlcanzado);
+    const cTrim = statusColor(pctTrim), cTrimA = statusColor(pctTrimAlcanzado);
+    const cAnual = statusColor(pctAnual);
 
     html += `<div class="ft-section-title" style="margin-top:0"><span class="bar"></span>Resumen del año en curso (${yKey})</div>`;
     html += `<div class="ft-grid">
@@ -656,9 +672,14 @@
       <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sMes.ganado)}</div></div>
       <div class="ft-card"><div class="label">Cuota (estimada, cuota Q ÷ 3)</div><div class="value">${money(cuotaMes)}</div></div>
       <div class="ft-card">
-        <div class="label">% Cuota cubierto</div>
+        <div class="label">% Cuota cubierto (WC+BC+Win)</div>
         <div class="value" style="color:${cMes.fg}">${pct(pctMes)}</div>
         <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctMes||0)*100)}%; background:${cMes.fg}"></div></div>
+      </div>
+      <div class="ft-card">
+        <div class="label">% Cuota alcanzado (solo ganado)</div>
+        <div class="value" style="color:${cMesA.fg}">${pct(pctMesAlcanzado)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctMesAlcanzado||0)*100)}%; background:${cMesA.fg}"></div></div>
       </div>
     </div>`;
 
@@ -669,9 +690,14 @@
       <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sTrim.ganado)}</div></div>
       <div class="ft-card"><div class="label">Cuota ${qKey}</div><div class="value">${money(cuotaTrim)}</div></div>
       <div class="ft-card">
-        <div class="label">% Cuota cubierto</div>
+        <div class="label">% Cuota cubierto (WC+BC+Win)</div>
         <div class="value" style="color:${cTrim.fg}">${pct(pctTrim)}</div>
         <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctTrim||0)*100)}%; background:${cTrim.fg}"></div></div>
+      </div>
+      <div class="ft-card">
+        <div class="label">% Cuota alcanzado (solo ganado)</div>
+        <div class="value" style="color:${cTrimA.fg}">${pct(pctTrimAlcanzado)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctTrimAlcanzado||0)*100)}%; background:${cTrimA.fg}"></div></div>
       </div>
     </div>`;
 
@@ -687,23 +713,59 @@
       html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (mes actual)</div>`;
       html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
         <th>Rep</th><th>Cuota mensual</th><th>Commit (Worst Case)</th><th>Probable (Best Case)</th>
-        <th>Upside total</th><th>Total esperado</th><th>% Cuota</th><th>Coverage</th>
+        <th>Upside (mes)</th><th>Total esperado</th><th>% Cuota (WC+BC+Win)</th><th>% Alcanzado</th><th>Coverage (mes)</th>
         <th>Ganadas (#)</th><th>Estancadas</th><th>Activ. vencidas</th>
       </tr></thead><tbody>`;
       reps.forEach(rep=>{
-        const rMes = periodSummary(filterDealsByRep(rep), monthKey, mKey);
+        const repDeals = filterDealsByRep(rep);
+        const rMes = periodSummary(repDeals, monthKey, mKey);
+        const upsideMes = periodUpside(repDeals, monthKey, mKey);
         const all = repAllTimeStats(rep);
         const p = all.cuotaMensual ? (rMes.commit+rMes.probable+rMes.ganado)/all.cuotaMensual : null;
-        const cov = all.cuotaMensual ? all.upsideAll/all.cuotaMensual : null;
-        const c = statusColor(p);
+        const pA = all.cuotaMensual ? rMes.ganado/all.cuotaMensual : null;
+        const cov = all.cuotaMensual ? upsideMes/all.cuotaMensual : null;
+        const c = statusColor(p), cA = statusColor(pA);
         html += `<tr>
           <td><strong>${rep}</strong></td>
           <td>${money(all.cuotaMensual)}</td>
           <td>${money(rMes.commit)}</td>
           <td>${money(rMes.probable)}</td>
-          <td>${money(all.upsideAll)}</td>
+          <td>${money(upsideMes)}</td>
           <td>${money(rMes.commit+rMes.probable)}</td>
           <td><span class="badge" style="background:${c.bg}; color:${c.fg}">${pct(p)}</span></td>
+          <td><span class="badge" style="background:${cA.bg}; color:${cA.fg}">${pct(pA)}</span></td>
+          <td>${cov===null?'n/a':cov.toFixed(1)+'x'}</td>
+          <td>${all.ganadas}</td>
+          <td>${all.stalled>0 ? `<span class="badge badge-stalled">${all.stalled} ⚠️</span>` : '0'}</td>
+          <td>${all.overdue>0 ? `<span class="badge badge-overdue">${all.overdue} ⏰</span>` : '0'}</td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`;
+
+      html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (trimestre actual — ${qKey})</div>`;
+      html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+        <th>Rep</th><th>Cuota ${qKey}</th><th>Commit (Worst Case)</th><th>Probable (Best Case)</th>
+        <th>Upside (trimestre)</th><th>Total esperado</th><th>% Cuota (WC+BC+Win)</th><th>% Alcanzado</th><th>Coverage (trimestre)</th>
+        <th>Ganadas (#)</th><th>Estancadas</th><th>Activ. vencidas</th>
+      </tr></thead><tbody>`;
+      reps.forEach(rep=>{
+        const repDeals = filterDealsByRep(rep);
+        const rTrim = periodSummary(repDeals, quarterKey, qKey);
+        const upsideTrim = periodUpside(repDeals, quarterKey, qKey);
+        const all = repAllTimeStats(rep);
+        const p = all.cuotaTrimestral ? (rTrim.commit+rTrim.probable+rTrim.ganado)/all.cuotaTrimestral : null;
+        const pA = all.cuotaTrimestral ? rTrim.ganado/all.cuotaTrimestral : null;
+        const cov = all.cuotaTrimestral ? upsideTrim/all.cuotaTrimestral : null;
+        const c = statusColor(p), cA = statusColor(pA);
+        html += `<tr>
+          <td><strong>${rep}</strong></td>
+          <td>${money(all.cuotaTrimestral)}</td>
+          <td>${money(rTrim.commit)}</td>
+          <td>${money(rTrim.probable)}</td>
+          <td>${money(upsideTrim)}</td>
+          <td>${money(rTrim.commit+rTrim.probable)}</td>
+          <td><span class="badge" style="background:${c.bg}; color:${c.fg}">${pct(p)}</span></td>
+          <td><span class="badge" style="background:${cA.bg}; color:${cA.fg}">${pct(pA)}</span></td>
           <td>${cov===null?'n/a':cov.toFixed(1)+'x'}</td>
           <td>${all.ganadas}</td>
           <td>${all.stalled>0 ? `<span class="badge badge-stalled">${all.stalled} ⚠️</span>` : '0'}</td>
@@ -712,13 +774,32 @@
       });
       html += `</tbody></table></div>`;
     } else {
+      const repDeals = filterDealsByRep(scopeRep);
       const all = repAllTimeStats(scopeRep);
+      const upsideMes = periodUpside(repDeals, monthKey, mKey);
+      const upsideTrim = periodUpside(repDeals, quarterKey, qKey);
       const p = all.cuotaMensual ? (sMes.commit+sMes.probable+sMes.ganado)/all.cuotaMensual : null;
-      const cov = all.cuotaMensual ? all.upsideAll/all.cuotaMensual : null;
-      html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep}</div>`;
+      const pA = all.cuotaMensual ? sMes.ganado/all.cuotaMensual : null;
+      const covMes = all.cuotaMensual ? upsideMes/all.cuotaMensual : null;
+      const pTrim = all.cuotaTrimestral ? (sTrim.commit+sTrim.probable+sTrim.ganado)/all.cuotaTrimestral : null;
+      const pTrimA = all.cuotaTrimestral ? sTrim.ganado/all.cuotaTrimestral : null;
+      const covTrim = all.cuotaTrimestral ? upsideTrim/all.cuotaTrimestral : null;
+      html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep} — mes actual</div>`;
       html += `<div class="ft-grid">
-        <div class="ft-card"><div class="label">Upside total (Top Upside + Upside)</div><div class="value">${money(all.upsideAll)}</div></div>
-        <div class="ft-card"><div class="label">Coverage (Upside / Cuota mensual)</div><div class="value">${cov===null?'n/a':cov.toFixed(1)+'x'}</div></div>
+        <div class="ft-card"><div class="label">% Cuota cubierto (WC+BC+Win)</div><div class="value">${pct(p)}</div></div>
+        <div class="ft-card"><div class="label">% Cuota alcanzado (solo ganado)</div><div class="value">${pct(pA)}</div></div>
+        <div class="ft-card"><div class="label">Upside (mes)</div><div class="value">${money(upsideMes)}</div></div>
+        <div class="ft-card"><div class="label">Coverage (mes)</div><div class="value">${covMes===null?'n/a':covMes.toFixed(1)+'x'}</div></div>
+      </div>`;
+      html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep} — trimestre actual</div>`;
+      html += `<div class="ft-grid">
+        <div class="ft-card"><div class="label">% Cuota cubierto (WC+BC+Win)</div><div class="value">${pct(pTrim)}</div></div>
+        <div class="ft-card"><div class="label">% Cuota alcanzado (solo ganado)</div><div class="value">${pct(pTrimA)}</div></div>
+        <div class="ft-card"><div class="label">Upside (trimestre)</div><div class="value">${money(upsideTrim)}</div></div>
+        <div class="ft-card"><div class="label">Coverage (trimestre)</div><div class="value">${covTrim===null?'n/a':covTrim.toFixed(1)+'x'}</div></div>
+      </div>`;
+      html += `<div class="ft-section-title"><span class="bar"></span>General</div>`;
+      html += `<div class="ft-grid">
         <div class="ft-card"><div class="label">Oportunidades ganadas (total)</div><div class="value">${all.ganadas}</div></div>
         <div class="ft-card"><div class="label">Estancadas</div><div class="value" style="color:${all.stalled>0?'var(--red)':'inherit'}">${all.stalled}</div></div>
         <div class="ft-card"><div class="label">Actividades vencidas</div><div class="value" style="color:${all.overdue>0?'var(--orange)':'inherit'}">${all.overdue}</div></div>
@@ -906,25 +987,43 @@
       </form>
     </div>`;
 
+    const allQuarters = Array.from(new Set(state.deals.map(d=>quarterKey(d.fecha)).filter(Boolean)))
+      .sort((a,b)=>{
+        const [qa,ya] = a.split('-'); const [qb,yb] = b.split('-');
+        return (Number(ya)-Number(yb)) || (Number(qa.replace('Q',''))-Number(qb.replace('Q','')));
+      });
+
     html += `<div class="ft-filter-row">
-      <select id="ft-filter-rep"><option value="">Todos los reps</option>${reps.map(r=>`<option>${r}</option>`).join('')}</select>
-      <select id="ft-filter-result"><option value="">Todos los resultados</option>${RESULTS.map(r=>`<option>${r}</option>`).join('')}</select>
+      <select id="ft-filter-rep"><option value="">Todos los reps</option>${reps.map(r=>`<option ${state.oppFilters.rep===r?'selected':''}>${r}</option>`).join('')}</select>
+      <select id="ft-filter-result"><option value="">Todos los resultados</option>${RESULTS.map(r=>`<option ${state.oppFilters.result===r?'selected':''}>${r}</option>`).join('')}</select>
+      <select id="ft-filter-quarter"><option value="">Todos los trimestres</option>${allQuarters.map(q=>`<option ${state.oppFilters.quarter===q?'selected':''}>${q}</option>`).join('')}</select>
+      <select id="ft-filter-fcat"><option value="">Todas las forecast category</option>${FCATS.map(f=>`<option ${state.oppFilters.fcat===f?'selected':''}>${f}</option>`).join('')}</select>
       <span class="ft-note">${state.deals.length} oportunidad(es) registradas</span>
     </div>`;
 
+    const sortedDeals = state.deals.slice().sort((a,b)=>{
+      const dir = state.oppSort.dir === 'asc' ? 1 : -1;
+      const va = a.fecha || '', vb = b.fecha || '';
+      if(va < vb) return -1*dir;
+      if(va > vb) return 1*dir;
+      return 0;
+    });
+    const sortArrow = state.oppSort.dir === 'asc' ? '▲' : '▼';
+
     html += `<div class="ft-table-wrap"><table class="ft-table" id="ft-deals-table"><thead><tr>
       <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Tipo</th><th>Monto</th>
-      <th>Cierre</th><th>D&iacute;as s/actividad</th><th>Resultado</th><th></th>
+      <th id="ft-sort-fecha" style="cursor:pointer; user-select:none;" title="Ordenar por fecha de cierre">Cierre ${sortArrow}</th>
+      <th>D&iacute;as s/actividad</th><th>Resultado</th><th></th>
     </tr></thead><tbody>
-    ${state.deals.length===0 ? `<tr><td colspan="11" class="ft-empty">Sin oportunidades registradas todav&iacute;a. Agrega la primera arriba.</td></tr>` :
-      state.deals.map(d=>{
+    ${sortedDeals.length===0 ? `<tr><td colspan="11" class="ft-empty">Sin oportunidades registradas todav&iacute;a. Agrega la primera arriba.</td></tr>` :
+      sortedDeals.map(d=>{
         const ds = daysSince(lastActivityDate(d));
         const stalled = d.resultado==='Abierta' && ds!==null && ds>STALL_DAYS;
         const overdue = d.resultado==='Abierta' && hasOverduePendingActivity(d);
-        return `<tr data-rep="${d.rep}" data-result="${d.resultado}">
+        return `<tr data-rep="${d.rep}" data-result="${d.resultado}" data-quarter="${quarterKey(d.fecha)||''}" data-fcat="${d.fcat}">
           <td>${d.rep}</td><td>${d.cliente||'—'}</td><td>${d.oportunidad}</td>
           <td>${d.etapa}</td><td>${fcatBadge(d.fcat)}</td><td>${tipoBadge(d.tipo)}</td><td>${money(d.monto)}</td>
-          <td>${d.fecha}</td>
+          <td>${formatDateDisplay(d.fecha)}</td>
           <td>${ds===null?'—':(stalled?`<span class="badge badge-stalled">${ds} ⚠️</span>`:ds)}${overdue?` <span class="badge badge-overdue">⏰</span>`:''}</td>
           <td>${resultBadge(d.resultado)}</td>
           <td style="white-space:nowrap;">
@@ -1005,14 +1104,27 @@
     function applyFilters(){
       const repVal = document.getElementById('ft-filter-rep').value;
       const resVal = document.getElementById('ft-filter-result').value;
+      const qVal = document.getElementById('ft-filter-quarter').value;
+      const fcatVal = document.getElementById('ft-filter-fcat').value;
+      state.oppFilters = { rep: repVal, result: resVal, quarter: qVal, fcat: fcatVal };
       document.querySelectorAll('#ft-deals-table tbody tr[data-rep]').forEach(tr=>{
         const okRep = !repVal || tr.dataset.rep===repVal;
         const okRes = !resVal || tr.dataset.result===resVal;
-        tr.style.display = (okRep && okRes) ? '' : 'none';
+        const okQ = !qVal || tr.dataset.quarter===qVal;
+        const okFcat = !fcatVal || tr.dataset.fcat===fcatVal;
+        tr.style.display = (okRep && okRes && okQ && okFcat) ? '' : 'none';
       });
     }
     document.getElementById('ft-filter-rep').addEventListener('change', applyFilters);
     document.getElementById('ft-filter-result').addEventListener('change', applyFilters);
+    document.getElementById('ft-filter-quarter').addEventListener('change', applyFilters);
+    document.getElementById('ft-filter-fcat').addEventListener('change', applyFilters);
+    applyFilters();
+
+    document.getElementById('ft-sort-fecha').addEventListener('click', ()=>{
+      state.oppSort.dir = state.oppSort.dir === 'asc' ? 'desc' : 'asc';
+      renderOportunidades();
+    });
   }
 
   function renderCuotas(){
