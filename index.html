@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forecast &amp; RTC Tracker | SEIDOR México</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
   html, body{ margin:0; padding:0; background:#F4F6FA; }
@@ -218,9 +219,8 @@
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
       <div class="sub" id="ft-updated-at">Cargando...</div>
       <div class="ft-header-actions">
-        <button id="ft-export-btn" title="Descarga un archivo .json con todos los datos">⬇ Exportar</button>
-        <button id="ft-import-btn" title="Carga un archivo .json exportado previamente">⬆ Importar</button>
-        <input type="file" id="ft-import-file" accept="application/json" style="display:none;">
+        <button id="ft-export-json-btn" title="Descarga un archivo .json con todos los datos (respaldo técnico)">⬇ JSON</button>
+        <button id="ft-export-xlsx-btn" title="Descarga un archivo Excel (.xlsx) con todos los datos">⬇ Excel</button>
       </div>
     </div>
   </div>
@@ -480,7 +480,7 @@
     await pushToBackend();
   }
 
-  function exportData(){
+  function exportJSON(){
     const payload = { exportedAt: new Date().toISOString(), config: state.config, deals: state.deals };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
@@ -493,42 +493,55 @@
     URL.revokeObjectURL(url);
   }
 
-  async function importData(file){
-    try{
-      const text = await file.text();
-      const payload = JSON.parse(text);
-      if(!payload.deals || !payload.config) throw new Error('Formato inválido');
-      const mode = confirm(
-        'Importar archivo: presiona "Aceptar" para REEMPLAZAR todos los datos actuales con los del archivo.\n' +
-        'Presiona "Cancelar" para FUSIONAR (agrega las oportunidades del archivo a las que ya tienes, sin borrar nada).'
-      );
-      if(mode){
-        state.config = payload.config;
-        state.deals = payload.deals;
-      } else {
-        const existingIds = new Set(state.deals.map(d=>d.id));
-        payload.deals.forEach(d=>{ if(!existingIds.has(d.id)) state.deals.push(d); });
-        payload.config.reps.forEach(r=>{ if(!state.config.reps.includes(r)) state.config.reps.push(r); });
-        state.config.quotas = Object.assign({}, payload.config.quotas, state.config.quotas);
-      }
-      await saveConfig();
-      await saveDeals();
-      state.activeTab = 'dashboard';
-      document.querySelectorAll('.ft-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==='dashboard'));
-      render();
-      alert('Datos importados correctamente.');
-    }catch(e){
-      console.error(e);
-      alert('No se pudo leer el archivo. Asegúrate de que sea un backup exportado desde este mismo tracker.');
+  function exportXLSX(){
+    if(typeof XLSX === 'undefined'){
+      alert('No se pudo cargar la librería de Excel (sin conexión a internet). Usa el botón JSON mientras tanto.');
+      return;
     }
+    const wb = XLSX.utils.book_new();
+
+    const dealsRows = state.deals.map(d => ({
+      'Rep': d.rep,
+      'Cliente (Nombre Comercial)': d.cliente || '',
+      'Oportunidad': d.oportunidad,
+      'Etapa': d.etapa,
+      'Forecast Category': d.fcat,
+      'Tipo': d.tipo || '',
+      'Monto (USD)': Number(d.monto || 0),
+      'Fecha cierre': formatDateDisplay(d.fecha),
+      'Fecha próximo paso': formatDateDisplay(d.fechaProximoPaso),
+      'Resultado': d.resultado,
+      'RTC - Próximo paso': d.rtc || '',
+      'Economic Buyer confirmado': d.eb ? 'Sí' : 'No',
+      'Champion confirmado': d.champion ? 'Sí' : 'No',
+      'Pain documentado': d.pain ? 'Sí' : 'No',
+      'Presupuesto confirmado': d.presupuesto ? 'Sí' : 'No',
+      'Competidor activo': d.competidor ? 'Sí' : 'No',
+      'Actividades': (d.actividades || []).map(a => `${a.descripcion || '(sin descripción)'} [${formatDateDisplay(a.fecha)}] ${a.completada ? '(Completada)' : '(Pendiente)'}`).join(' | '),
+      'Comentarios': d.comentarios || ''
+    }));
+    const wsDeals = XLSX.utils.json_to_sheet(dealsRows);
+    XLSX.utils.book_append_sheet(wb, wsDeals, 'Oportunidades');
+
+    const quotaRows = state.config.reps.map(rep => {
+      const q = state.config.quotas[rep] || {};
+      return {
+        'Rep': rep,
+        'Cuota Anual (USD)': Number(q.anual || 0),
+        'Q1 (USD)': Number(q.q1 || 0),
+        'Q2 (USD)': Number(q.q2 || 0),
+        'Q3 (USD)': Number(q.q3 || 0),
+        'Q4 (USD)': Number(q.q4 || 0)
+      };
+    });
+    const wsQuotas = XLSX.utils.json_to_sheet(quotaRows);
+    XLSX.utils.book_append_sheet(wb, wsQuotas, 'Cuotas');
+
+    XLSX.writeFile(wb, 'forecast-tracker-backup-' + new Date().toISOString().slice(0,10) + '.xlsx');
   }
 
-  document.getElementById('ft-export-btn').addEventListener('click', exportData);
-  document.getElementById('ft-import-btn').addEventListener('click', ()=> document.getElementById('ft-import-file').click());
-  document.getElementById('ft-import-file').addEventListener('change', (e)=>{
-    if(e.target.files[0]) importData(e.target.files[0]);
-    e.target.value = '';
-  });
+  document.getElementById('ft-export-json-btn').addEventListener('click', exportJSON);
+  document.getElementById('ft-export-xlsx-btn').addEventListener('click', exportXLSX);
 
   // ---------- Tabs ----------
   document.querySelectorAll('.ft-tab').forEach(tab=>{
@@ -605,7 +618,7 @@
     } else if(!isOnline){
       footerNote.innerHTML = '⚠️ <strong>Sin conexión con el servidor compartido.</strong> Tus cambios se guardaron solo en este navegador. Revisa tu API_URL/API_KEY o tu conexión, y vuelve a intentar.';
     } else {
-      footerNote.textContent = 'Conectado al servidor compartido — todo lo que se registra aquí lo ven todos los reps que abran este sitio. Los botones Exportar/Importar siguen disponibles como respaldo.';
+      footerNote.textContent = 'Conectado al servidor compartido — todo lo que se registra aquí lo ven todos los reps que abran este sitio. Los botones JSON/Excel siguen disponibles como respaldo.';
     }
     if(state.activeTab==='dashboard') renderDashboard();
     else if(state.activeTab==='oportunidades') renderOportunidades();
@@ -1168,10 +1181,8 @@
     html += `<div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
       <button class="ft-btn secondary" id="ft-add-rep">+ Agregar rep</button>
       <button class="ft-btn" id="ft-save-cuotas">Guardar cambios</button>
-      <button class="ft-btn secondary" id="ft-seed-data" style="border-color:var(--amber); color:var(--amber);">🔄 Cargar datos de ejemplo (SEIDOR)</button>
     </div>`;
     html += `<div class="ft-note">Los nombres de rep deben coincidir exactamente con los que uses en "Oportunidades" para que el Dashboard sume correctamente.</div>`;
-    html += `<div class="ft-note">"Cargar datos de ejemplo" reemplaza reps y oportunidades actuales por las 155 oportunidades cargadas desde tu export de HubSpot (53 ya ganadas + 102 en pipeline abierto), de los 8 reps que aparecen en el export. Úsalo solo si quieres reiniciar con esos datos — es una acción destructiva.</div>`;
 
     body.innerHTML = html;
 
@@ -1236,18 +1247,6 @@
       await saveDeals();
       render();
     });
-
-    document.getElementById('ft-seed-data').addEventListener('click', async ()=>{
-      if(!confirm('Esto va a REEMPLAZAR los reps y todas las oportunidades actuales por los datos de ejemplo de SEIDOR (155 oportunidades: 53 ganadas + 102 en pipeline). ¿Continuar?')) return;
-      state.config = { reps: SEED_DATA.reps.slice(), quotas: JSON.parse(JSON.stringify(SEED_DATA.quotas)) };
-      state.deals = JSON.parse(JSON.stringify(SEED_DATA.deals));
-      await saveConfig();
-      await saveDeals();
-      state.dashboardScope = '__team__';
-      state.activeTab = 'dashboard';
-      document.querySelectorAll('.ft-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==='dashboard'));
-      render();
-    });
   }
 
   function renderAyuda(){
@@ -1286,7 +1285,8 @@
       Cualquier persona que abra el link ve y edita los mismos datos, sin pasos manuales.</p>
       <p style="font-size:12.5px; color:var(--grey-text); line-height:1.6;">Si en algún momento el sitio no logra conectarse al servidor, tus cambios se guardan temporalmente
       solo en tu navegador y verás una advertencia amarilla abajo — reintenta cuando tengas conexión.
-      Los botones <strong>⬇ Exportar</strong> / <strong>⬆ Importar</strong> siguen ahí como respaldo manual adicional.</p>
+      Los botones <strong>⬇ JSON</strong> / <strong>⬇ Excel</strong> siguen ahí como respaldo manual — descargan una copia completa de los datos, pero no hay botón para volver a cargarlos desde el sitio (si necesitas restaurar un respaldo, dímelo directamente).</p>
+      <p style="font-size:12.5px; color:var(--grey-text); line-height:1.6;">Nota técnica: el archivo Excel se genera en tu propio navegador (librería SheetJS), no se sube a ningún servidor externo.</p>
     `;
   }
 
