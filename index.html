@@ -572,6 +572,10 @@
     return deals.filter(d=>d.resultado==='Abierta' && (d.fcat==='Top Upside'||d.fcat==='Upside') && periodKeyFn(d.fecha)===periodVal)
       .reduce((s,d)=>s+Number(d.monto||0),0);
   }
+  function periodTotalPipeline(deals, periodKeyFn, periodVal){
+    return deals.filter(d=>d.resultado==='Abierta' && periodKeyFn(d.fecha)===periodVal)
+      .reduce((s,d)=>s+Number(d.monto||0),0);
+  }
 
   function tipoBreakdown(deals){
     const won = deals.filter(d=>d.resultado==='Ganada');
@@ -644,9 +648,9 @@
       cuotaNextTrim = reps.reduce((s,r)=>s+getCuotaTrimestral(r, nqKey),0);
       cuotaAnual = reps.reduce((s,r)=>s+getCuotaAnual(r),0);
     }
-    const pctMes = cuotaMes ? (sMes.commit+sMes.probable+sMes.ganado)/cuotaMes : null;
+    const pctMes = cuotaMes ? (sMes.commit+sMes.ganado)/cuotaMes : null;
     const pctMesAlcanzado = cuotaMes ? sMes.ganado/cuotaMes : null;
-    const pctTrim = cuotaTrim ? (sTrim.commit+sTrim.probable+sTrim.ganado)/cuotaTrim : null;
+    const pctTrim = cuotaTrim ? (sTrim.commit+sTrim.ganado)/cuotaTrim : null;
     const pctTrimAlcanzado = cuotaTrim ? sTrim.ganado/cuotaTrim : null;
     const pctAnual = cuotaAnual ? sYear.ganado/cuotaAnual : null;
     const cMes = statusColor(pctMes), cMesA = statusColor(pctMesAlcanzado);
@@ -672,7 +676,7 @@
       <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sMes.ganado)}</div></div>
       <div class="ft-card"><div class="label">Cuota (estimada, cuota Q ÷ 3)</div><div class="value">${money(cuotaMes)}</div></div>
       <div class="ft-card">
-        <div class="label">% Cuota cubierto (WC+BC+Win)</div>
+        <div class="label">% Cuota cubierto (WC+Win)</div>
         <div class="value" style="color:${cMes.fg}">${pct(pctMes)}</div>
         <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctMes||0)*100)}%; background:${cMes.fg}"></div></div>
       </div>
@@ -690,7 +694,7 @@
       <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sTrim.ganado)}</div></div>
       <div class="ft-card"><div class="label">Cuota ${qKey}</div><div class="value">${money(cuotaTrim)}</div></div>
       <div class="ft-card">
-        <div class="label">% Cuota cubierto (WC+BC+Win)</div>
+        <div class="label">% Cuota cubierto (WC+Win)</div>
         <div class="value" style="color:${cTrim.fg}">${pct(pctTrim)}</div>
         <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctTrim||0)*100)}%; background:${cTrim.fg}"></div></div>
       </div>
@@ -713,17 +717,18 @@
       html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (mes actual)</div>`;
       html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
         <th>Rep</th><th>Cuota mensual</th><th>Commit (Worst Case)</th><th>Probable (Best Case)</th>
-        <th>Upside (mes)</th><th>Total esperado</th><th>% Cuota (WC+BC+Win)</th><th>% Alcanzado</th><th>Coverage (mes)</th>
+        <th>Upside (mes)</th><th>Total esperado</th><th>% Cuota (WC+Win)</th><th>% Alcanzado</th><th title="Suma de TODAS las oportunidades abiertas del mes (cualquier etapa/forecast) entre la cuota mensual">Coverage (mes)</th>
         <th>Ganadas (#)</th><th>Estancadas</th><th>Activ. vencidas</th>
       </tr></thead><tbody>`;
       reps.forEach(rep=>{
         const repDeals = filterDealsByRep(rep);
         const rMes = periodSummary(repDeals, monthKey, mKey);
         const upsideMes = periodUpside(repDeals, monthKey, mKey);
+        const pipelineMes = periodTotalPipeline(repDeals, monthKey, mKey);
         const all = repAllTimeStats(rep);
-        const p = all.cuotaMensual ? (rMes.commit+rMes.probable+rMes.ganado)/all.cuotaMensual : null;
+        const p = all.cuotaMensual ? (rMes.commit+rMes.ganado)/all.cuotaMensual : null;
         const pA = all.cuotaMensual ? rMes.ganado/all.cuotaMensual : null;
-        const cov = all.cuotaMensual ? upsideMes/all.cuotaMensual : null;
+        const cov = all.cuotaMensual ? pipelineMes/all.cuotaMensual : null;
         const c = statusColor(p), cA = statusColor(pA);
         html += `<tr>
           <td><strong>${rep}</strong></td>
@@ -745,17 +750,18 @@
       html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (trimestre actual — ${qKey})</div>`;
       html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
         <th>Rep</th><th>Cuota ${qKey}</th><th>Commit (Worst Case)</th><th>Probable (Best Case)</th>
-        <th>Upside (trimestre)</th><th>Total esperado</th><th>% Cuota (WC+BC+Win)</th><th>% Alcanzado</th><th>Coverage (trimestre)</th>
+        <th>Upside (trimestre)</th><th>Total esperado</th><th>% Cuota (WC+Win)</th><th>% Alcanzado</th><th title="Suma de TODAS las oportunidades abiertas del trimestre (cualquier etapa/forecast) entre la cuota trimestral">Coverage (trimestre)</th>
         <th>Ganadas (#)</th><th>Estancadas</th><th>Activ. vencidas</th>
       </tr></thead><tbody>`;
       reps.forEach(rep=>{
         const repDeals = filterDealsByRep(rep);
         const rTrim = periodSummary(repDeals, quarterKey, qKey);
         const upsideTrim = periodUpside(repDeals, quarterKey, qKey);
+        const pipelineTrim = periodTotalPipeline(repDeals, quarterKey, qKey);
         const all = repAllTimeStats(rep);
-        const p = all.cuotaTrimestral ? (rTrim.commit+rTrim.probable+rTrim.ganado)/all.cuotaTrimestral : null;
+        const p = all.cuotaTrimestral ? (rTrim.commit+rTrim.ganado)/all.cuotaTrimestral : null;
         const pA = all.cuotaTrimestral ? rTrim.ganado/all.cuotaTrimestral : null;
-        const cov = all.cuotaTrimestral ? upsideTrim/all.cuotaTrimestral : null;
+        const cov = all.cuotaTrimestral ? pipelineTrim/all.cuotaTrimestral : null;
         const c = statusColor(p), cA = statusColor(pA);
         html += `<tr>
           <td><strong>${rep}</strong></td>
@@ -778,22 +784,24 @@
       const all = repAllTimeStats(scopeRep);
       const upsideMes = periodUpside(repDeals, monthKey, mKey);
       const upsideTrim = periodUpside(repDeals, quarterKey, qKey);
-      const p = all.cuotaMensual ? (sMes.commit+sMes.probable+sMes.ganado)/all.cuotaMensual : null;
+      const pipelineMes = periodTotalPipeline(repDeals, monthKey, mKey);
+      const pipelineTrim = periodTotalPipeline(repDeals, quarterKey, qKey);
+      const p = all.cuotaMensual ? (sMes.commit+sMes.ganado)/all.cuotaMensual : null;
       const pA = all.cuotaMensual ? sMes.ganado/all.cuotaMensual : null;
-      const covMes = all.cuotaMensual ? upsideMes/all.cuotaMensual : null;
-      const pTrim = all.cuotaTrimestral ? (sTrim.commit+sTrim.probable+sTrim.ganado)/all.cuotaTrimestral : null;
+      const covMes = all.cuotaMensual ? pipelineMes/all.cuotaMensual : null;
+      const pTrim = all.cuotaTrimestral ? (sTrim.commit+sTrim.ganado)/all.cuotaTrimestral : null;
       const pTrimA = all.cuotaTrimestral ? sTrim.ganado/all.cuotaTrimestral : null;
-      const covTrim = all.cuotaTrimestral ? upsideTrim/all.cuotaTrimestral : null;
+      const covTrim = all.cuotaTrimestral ? pipelineTrim/all.cuotaTrimestral : null;
       html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep} — mes actual</div>`;
       html += `<div class="ft-grid">
-        <div class="ft-card"><div class="label">% Cuota cubierto (WC+BC+Win)</div><div class="value">${pct(p)}</div></div>
+        <div class="ft-card"><div class="label">% Cuota cubierto (WC+Win)</div><div class="value">${pct(p)}</div></div>
         <div class="ft-card"><div class="label">% Cuota alcanzado (solo ganado)</div><div class="value">${pct(pA)}</div></div>
         <div class="ft-card"><div class="label">Upside (mes)</div><div class="value">${money(upsideMes)}</div></div>
         <div class="ft-card"><div class="label">Coverage (mes)</div><div class="value">${covMes===null?'n/a':covMes.toFixed(1)+'x'}</div></div>
       </div>`;
       html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep} — trimestre actual</div>`;
       html += `<div class="ft-grid">
-        <div class="ft-card"><div class="label">% Cuota cubierto (WC+BC+Win)</div><div class="value">${pct(pTrim)}</div></div>
+        <div class="ft-card"><div class="label">% Cuota cubierto (WC+Win)</div><div class="value">${pct(pTrim)}</div></div>
         <div class="ft-card"><div class="label">% Cuota alcanzado (solo ganado)</div><div class="value">${pct(pTrimA)}</div></div>
         <div class="ft-card"><div class="label">Upside (trimestre)</div><div class="value">${money(upsideTrim)}</div></div>
         <div class="ft-card"><div class="label">Coverage (trimestre)</div><div class="value">${covTrim===null?'n/a':covTrim.toFixed(1)+'x'}</div></div>
@@ -939,7 +947,7 @@
           <div class="ft-field"><label>Rep</label>
             <select name="rep" required>${reps.map(r=>`<option value="${r}" ${editing&&editing.rep===r?'selected':''}>${r}</option>`).join('')}</select>
           </div>
-          <div class="ft-field"><label>Cliente</label><input name="cliente" value="${editing?(editing.cliente||''):''}"></div>
+          <div class="ft-field"><label>Cliente (Nombre Comercial)</label><input name="cliente" value="${editing?(editing.cliente||''):''}"></div>
           <div class="ft-field"><label>Oportunidad</label><input name="oportunidad" required value="${editing?editing.oportunidad:''}"></div>
           <div class="ft-field"><label>Etapa GSG</label>
             <select name="etapa" id="ft-etapa-select">${GSG_STAGES.map(s=>`<option ${editing&&editing.etapa===s?'selected':''}>${s}</option>`).join('')}</select>
@@ -1011,7 +1019,7 @@
     const sortArrow = state.oppSort.dir === 'asc' ? '▲' : '▼';
 
     html += `<div class="ft-table-wrap"><table class="ft-table" id="ft-deals-table"><thead><tr>
-      <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Tipo</th><th>Monto</th>
+      <th>Rep</th><th>Cliente (Nombre Comercial)</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Tipo</th><th>Monto</th>
       <th id="ft-sort-fecha" style="cursor:pointer; user-select:none;" title="Ordenar por fecha de cierre">Cierre ${sortArrow}</th>
       <th>D&iacute;as s/actividad</th><th>Resultado</th><th></th>
     </tr></thead><tbody>
