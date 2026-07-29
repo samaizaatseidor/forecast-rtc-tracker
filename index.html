@@ -7,7 +7,6 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
   html, body{ margin:0; padding:0; background:#F4F6FA; }
-
   :root{
     --navy:#0A1226;
     --blue:#1E5BB8;
@@ -21,6 +20,14 @@
     --amber-bg:#FBF3DC;
     --green:#1E8E3E;
     --green-bg:#E4F5E9;
+    --purple:#6B3FA0;
+    --purple-bg:#EFE6F7;
+    --teal:#0E8A82;
+    --teal-bg:#E1F4F2;
+    --orange:#C15C0E;
+    --orange-bg:#FCEADA;
+    --pink:#B8286E;
+    --pink-bg:#FAE3EF;
     --white:#FFFFFF;
   }
   *{box-sizing:border-box;}
@@ -29,21 +36,14 @@
     background:var(--grey-bg);
     color:var(--navy);
     padding:0;
-    max-width:1180px;
+    max-width:1280px;
     margin:0 auto;
     min-height:100vh;
     box-shadow:0 0 40px rgba(10,18,38,0.06);
   }
-  @media (min-width:1220px){
+  @media (min-width:1320px){
     .ft-root{ margin:24px auto; border-radius:14px; min-height:auto; overflow:hidden; }
   }
-  .ft-header-actions{ display:flex; gap:8px; align-items:center; }
-  .ft-header-actions button{
-    font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:600;
-    background:rgba(255,255,255,0.08); color:#CBD8EE; border:1px solid rgba(255,255,255,0.18);
-    border-radius:7px; padding:7px 12px; cursor:pointer;
-  }
-  .ft-header-actions button:hover{ background:rgba(255,255,255,0.16); color:white; }
   .ft-header{
     background:linear-gradient(120deg,var(--navy) 0%, #142242 100%);
     color:white;
@@ -67,12 +67,20 @@
     margin-top:2px;
   }
   .ft-header .accent{ color:var(--cyan); }
+  .ft-header-actions{ display:flex; gap:8px; align-items:center; }
+  .ft-header-actions button{
+    font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:600;
+    background:rgba(255,255,255,0.08); color:#CBD8EE; border:1px solid rgba(255,255,255,0.18);
+    border-radius:7px; padding:7px 12px; cursor:pointer;
+  }
+  .ft-header-actions button:hover{ background:rgba(255,255,255,0.16); color:white; }
   .ft-tabs{
     display:flex;
     gap:4px;
     background:var(--white);
     padding:8px 16px 0 16px;
     border-bottom:1px solid var(--grey-line);
+    flex-wrap:wrap;
   }
   .ft-tab{
     font-family:'Poppins',sans-serif;
@@ -88,7 +96,7 @@
   .ft-tab:hover{ color:var(--navy); }
   .ft-body{ padding:20px 24px; background:var(--white); min-height:400px; }
 
-  .ft-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .ft-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
   .ft-card{
     background:var(--white);
     border:1px solid var(--grey-line);
@@ -96,7 +104,7 @@
     padding:16px;
   }
   .ft-card .label{ font-size:11px; color:var(--grey-text); text-transform:uppercase; letter-spacing:0.4px; font-weight:600;}
-  .ft-card .value{ font-family:'Poppins',sans-serif; font-size:24px; font-weight:700; margin-top:6px; color:var(--navy);}
+  .ft-card .value{ font-family:'Poppins',sans-serif; font-size:22px; font-weight:700; margin-top:6px; color:var(--navy);}
   .ft-card .caption{ font-size:11px; color:var(--grey-text); margin-top:4px;}
 
   .ft-progress{ height:8px; background:var(--grey-line); border-radius:6px; margin-top:10px; overflow:hidden;}
@@ -108,7 +116,7 @@
     font-weight:600;
     color:var(--navy);
     margin:24px 0 10px 0;
-    display:flex; align-items:center; gap:8px;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
   }
   .ft-section-title .bar{ width:4px; height:16px; background:var(--blue); border-radius:2px; display:inline-block;}
 
@@ -121,16 +129,22 @@
   table.ft-table tr:hover td{ background:#FAFBFD; }
   .ft-table-wrap{ overflow-x:auto; border:1px solid var(--grey-line); border-radius:10px; }
 
-  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:10.5px; font-weight:600; white-space:nowrap; }
   .badge-commit{ background:var(--green-bg); color:var(--green); }
-  .badge-bestcase{ background:var(--amber-bg); color:var(--amber); }
-  .badge-pipeline{ background:#E7ECF5; color:var(--blue); }
-  .badge-omitted{ background:#EEE; color:#888; }
+  .badge-probable{ background:var(--amber-bg); color:var(--amber); }
+  .badge-topupside{ background:#E7ECF5; color:var(--blue); }
+  .badge-upside{ background:#EEE; color:#888; }
   .badge-stalled{ background:var(--red-bg); color:var(--red); }
-  .badge-ok{ background:var(--green-bg); color:var(--green); }
+  .badge-overdue{ background:var(--orange-bg); color:var(--orange); }
   .badge-ganada{ background:var(--green-bg); color:var(--green); }
   .badge-perdida{ background:var(--red-bg); color:var(--red); }
   .badge-abierta{ background:#E7ECF5; color:var(--blue); }
+  .badge-tipo-suscripcion{ background:var(--purple-bg); color:var(--purple); }
+  .badge-tipo-implementacion{ background:#E7ECF5; color:var(--blue); }
+  .badge-tipo-ams{ background:var(--teal-bg); color:var(--teal); }
+  .badge-tipo-renovacion{ background:var(--green-bg); color:var(--green); }
+  .badge-tipo-rollout{ background:var(--orange-bg); color:var(--orange); }
+  .badge-tipo-bolsadehoras{ background:var(--pink-bg); color:var(--pink); }
 
   .ft-btn{
     font-family:'Poppins',sans-serif;
@@ -153,6 +167,7 @@
   }
   .ft-field input:focus, .ft-field select:focus, .ft-field textarea:focus{ outline:2px solid var(--cyan); outline-offset:1px; }
   .ft-field textarea{ resize:vertical; min-height:44px; }
+  .ft-field select:disabled{ background:var(--grey-bg); color:var(--grey-text); }
   .ft-form-box{ background:var(--grey-bg); border:1px solid var(--grey-line); border-radius:10px; padding:16px; margin-bottom:20px;}
 
   .ft-toggle-row{ display:flex; gap:8px; flex-wrap:wrap; }
@@ -161,6 +176,7 @@
     font-size:12px; cursor:pointer; background:white; color:var(--grey-text); font-weight:600;
   }
   .ft-toggle.on{ background:var(--green-bg); border-color:var(--green); color:var(--green); }
+  .ft-toggle.on-warn{ background:var(--red-bg); border-color:var(--red); color:var(--red); }
 
   .ft-empty{ text-align:center; padding:40px 20px; color:var(--grey-text); font-size:13px; }
   .ft-filter-row{ display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;}
@@ -168,6 +184,14 @@
   .ft-note{ font-size:11.5px; color:var(--grey-text); margin-top:6px; }
   .ft-footer-note{ font-size:11px; color:var(--grey-text); padding:10px 24px; border-top:1px solid var(--grey-line); background:var(--grey-bg);}
   .ft-loading{ text-align:center; padding:60px; color:var(--grey-text); }
+
+  .ft-activity-row{ display:grid; grid-template-columns:1fr 150px 110px 32px; gap:8px; align-items:center; margin-bottom:8px; }
+  .ft-activity-row input[type=text], .ft-activity-row input[type=date]{
+    padding:7px 9px; border:1px solid var(--grey-line); border-radius:6px; font-size:12.5px; width:100%;
+  }
+  .ft-activity-row .ft-act-done{ display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--grey-text); }
+  .ft-scope-bar{ display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+  .ft-scope-bar select{ padding:8px 12px; border-radius:7px; border:1px solid var(--grey-line); font-size:13px; font-weight:600; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -176,7 +200,7 @@
   <div class="ft-header">
     <div>
       <h1>Forecast &amp; RTC <span class="accent">Tracker</span></h1>
-      <div class="sub">Equipo Comercial &middot; SEIDOR M&eacute;xico</div>
+      <div class="sub">Equipo Comercial &middot; SEIDOR M&eacute;xico &middot; USD</div>
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
       <div class="sub" id="ft-updated-at">Cargando...</div>
@@ -211,19 +235,28 @@
   };
   // ============================================================================
 
-  const CONFIG_KEY = 'seidor-forecast-config';
-  const DEALS_KEY = 'seidor-forecast-deals';
+  const CONFIG_KEY = 'seidor-forecast-config-v2';
+  const DEALS_KEY = 'seidor-forecast-deals-v2';
 
-  const GSG_STAGES = ["F - Prospección","E - Calificación","D - Descubrimiento","C - Propuesta","B - Negociación","A - Cierre"];
-  const FCATS = ["Commit","Best Case","Pipeline","Omitted"];
+  const REPS_DEFAULT = ["Fernanda Richards","Natalia Ossa","Estefanía Muñoz","Manuel Apón"];
+  const GSG_STAGES = ["Lead","F - Sales Qualified Lead","E - Presales","D - Proposal","C - Negotiation","B - Contracting","A - Closed-Ganado"];
+  const FCATS = ["Commit","Probable","Top Upside","Upside"];
+  const TIPOS = ["Suscripción","Implementación","AMS","Renovación","Roll-Out","Bolsa de horas"];
   const RESULTS = ["Abierta","Ganada","Perdida"];
   const STALL_DAYS = 15;
 
+  // ---- Datos semilla: 53 oportunidades ya ganadas, cargadas desde export de HubSpot ----
+  const SEED_DEALS = [{"id": "seed001", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260401 ERP BI Casanova Rent SERV leasing automotriz", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 89950, "fecha": "2026-06-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed002", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260401 ERP BI Gpo Presidente SERV Reingenieria Roles Z CC", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 8888.89, "fecha": "2026-06-16", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed003", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260101 ERP BI Valia SERV Rollout EVMs", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Roll-Out", "monto": 459006, "fecha": "2026-06-09", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed004", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260401 ERP BI Casanova Rent SUSCP leasing automotriz", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Suscripción", "monto": 22539.08, "fecha": "2026-05-29", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed005", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260525 Ams BI Oca Serv Soporte horas mayo", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 13208, "fecha": "2026-05-27", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed006", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260313 HXM BI Fraiche AMS Bolsa de horas mensual 40 hrs.", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 3230.77, "fecha": "2026-05-06", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed007", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260320 HXM BI Dacomsa CC Ampliación proyecto e IAS", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 36051.11, "fecha": "2026-04-24", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed008", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260415 NN LLYC AMS Soporte horas ERP (bolsa)", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 1170, "fecha": "2026-04-17", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed009", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260401 HXM BI Talma HXM SERV horas soporte nomina Mexico", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 5520, "fecha": "2026-04-17", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed010", "rep": "Manuel Apón", "cliente": "", "oportunidad": "Casanova Rent - ERP Cloud Private (Servicios)", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 1125018.5, "fecha": "2026-03-27", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed011", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260301 HXM BI Nicrobolta AMS bolsa 150 horas renovacion", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 11638.89, "fecha": "2026-03-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed012", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260301 Analytics BI Nicrobolta SERV reporte people", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 2250, "fecha": "2026-03-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed013", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20250701 ERP NN Casanova SUSC Cloud ERP Private Rise", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Suscripción", "monto": 422701.8, "fecha": "2026-03-25", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed014", "rep": "Manuel Apón", "cliente": "", "oportunidad": "20260308 HXM BI AMS Saavi bolsa 40 horas PMGM", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 3111.11, "fecha": "2026-03-12", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed015", "rep": "Manuel Apón", "cliente": "", "oportunidad": "CX-Pavisa-Manpower Sales Services 2.0", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 3600, "fecha": "2026-03-06", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed016", "rep": "Manuel Apón", "cliente": "", "oportunidad": "HXM-Fraiche-Upsell 500 comisiones Q1 2026", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 23535.1, "fecha": "2026-03-03", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed017", "rep": "Manuel Apón", "cliente": "", "oportunidad": "GROW-Kio (Powerhost)-Imple S4P regional", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 311000, "fecha": "2026-02-19", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed018", "rep": "Manuel Apón", "cliente": "", "oportunidad": "HCM-Traxion Solistica-CC Confronta IMSS", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 16377.78, "fecha": "2026-02-17", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed019", "rep": "Manuel Apón", "cliente": "", "oportunidad": "ERP-Traxion-CC Interfaz Apis Traxporta", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 5912.17, "fecha": "2026-02-11", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed020", "rep": "Manuel Apón", "cliente": "", "oportunidad": "HXM-Engie-AMS soporte Nomina 2026 baseline 30 horas", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 21600, "fecha": "2026-01-23", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed021", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Soporte SFSF-RCD Hotels", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 38665, "fecha": "2026-06-29", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed022", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260309_HXM_BI_AMMPER_Exclusion Pago de Vales", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 995.38, "fecha": "2026-06-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed023", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20250501_ERP_Interco_Localización_Doga", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 106289, "fecha": "2026-06-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed024", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "Adopt&Operate-Delmex", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 138039.5, "fecha": "2026-06-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed025", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260409_AMS_BI_Soporte_SURMAN", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 24300, "fecha": "2026-05-29", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed026", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260423_AMS_BI_Bolsa100hrs_Calorex", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 9444.44, "fecha": "2026-05-27", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed027", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20250505_ERP_BI_APPMobileStart_Surman", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 2777.77, "fecha": "2026-05-15", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed028", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260301_ERP_BI_Soporte Proyecto_Auna", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 78000, "fecha": "2026-04-30", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed029", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "Grupo Andrea - AMS", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 85555.56, "fecha": "2026-04-29", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed030", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "CX-Aplazo 1er hito pago-Innovasport", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 11830, "fecha": "2026-03-26", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed031", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260320_HXM_BI_Soporte Rappi Febrero_SEIDOR Colombia", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 1920, "fecha": "2026-03-24", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed032", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260320_HXM_BI_Soporte Rappi Marzo_SEIDOR Colombia", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 1920, "fecha": "2026-03-24", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed033", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260320_HXM_BI_Proyecto Nueva Sociedad_SEIDOR Colombia", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 2764.8, "fecha": "2026-03-24", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed034", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "20260309_HXM_BI_AMMPER_REPORTE TIME OFF", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 1051.27, "fecha": "2026-03-20", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed035", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "D17 Analytics- Celula Ágil Febrero-Farmacias Roma", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 15444, "fecha": "2026-03-06", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed036", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "SFSF-Actividades post refresh- AMMPER", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 479.61, "fecha": "2026-03-05", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed037", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Excedentes Enero-SALMI", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 13505.56, "fecha": "2026-03-03", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed038", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Soporte 40 Hrs-GP Vivienda", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 32236.67, "fecha": "2026-02-23", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed039", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "Seidor España - Desigual", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 7743, "fecha": "2026-02-20", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed040", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS SFSF-APOYOS-RAPPI", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 1920, "fecha": "2026-02-16", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed041", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Soporte evolutivo 200 hrs- AUNA", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 39000, "fecha": "2026-01-30", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed042", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "D2-Apoyo Nov-Dic 25- Orbis", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 2520, "fecha": "2026-01-23", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed043", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-360 Horas H1 2025-SABAF", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 22000, "fecha": "2026-01-22", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed044", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Soporte- Demar", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 13573.33, "fecha": "2026-01-16", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed045", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "HXM- Workaround Nota Sobretiempos-Andrea", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 8399.22, "fecha": "2026-01-14", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed046", "rep": "Fernanda Richards", "cliente": "", "oportunidad": "AMS-Bolsa 100 Horas-Lluche", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 10000, "fecha": "2026-01-08", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed047", "rep": "Estefanía Muñoz", "cliente": "", "oportunidad": "20261501_SF_GICSA - Propuesta de Integración", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 26515, "fecha": "2026-07-08", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed048", "rep": "Estefanía Muñoz", "cliente": "", "oportunidad": "20261503_AMS_Papeleria Principado - Bolsa 100 hrs", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Bolsa de horas", "monto": 8837, "fecha": "2026-07-03", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed049", "rep": "Estefanía Muñoz", "cliente": "", "oportunidad": "20260104_Adopción_Papeleria Principado - Adopción", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 28839.88, "fecha": "2026-06-15", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed050", "rep": "Estefanía Muñoz", "cliente": "", "oportunidad": "20262003_Buenaventura Grupo Pecuario - Upsell", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "Implementación", "monto": 86120, "fecha": "2026-03-27", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed051", "rep": "Estefanía Muñoz", "cliente": "", "oportunidad": "20260211_HXM_BI_PEMSA CIE_SupportSF", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 7692.33, "fecha": "2026-02-13", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed052", "rep": "Natalia Ossa", "cliente": "", "oportunidad": "20260331_S4_BI_BIOSYSTEMS_AMS_FEB", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 2643, "fecha": "2026-03-31", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}, {"id": "seed053", "rep": "Natalia Ossa", "cliente": "", "oportunidad": "HXM_CC DESVIACIÓN_PSF", "etapa": "A - Closed-Ganado", "fcat": "Commit", "tipo": "AMS", "monto": 83241.03, "fecha": "2026-02-06", "fechaProximoPaso": "", "resultado": "Ganada", "rtc": "", "comentarios": "Cargado desde export de HubSpot (deal cerrado-ganado). Cliente sin especificar — el export no incluía esa columna, complétalo si lo necesitas.", "actividades": [], "eb": false, "champion": false, "pain": false, "presupuesto": false, "competidor": false}];
+
+  const SEED_DATA = { reps: REPS_DEFAULT.slice(), quotas: {}, deals: SEED_DEALS };
+
   let state = {
-    config: { reps: ["Rep 1","Rep 2","Rep 3","Rep 4","Rep 5"], quotas: {} },
+    config: { reps: REPS_DEFAULT.slice(), quotas: {} },
     deals: [],
     activeTab: 'dashboard',
-    editingId: null
+    editingId: null,
+    dashboardScope: '__team__',
+    formActivities: []
   };
 
   const root = document.getElementById('ft-root');
@@ -234,11 +267,15 @@
   function uid(){ return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function money(n){
     n = Number(n)||0;
-    return '$' + n.toLocaleString('es-MX', {maximumFractionDigits:0});
+    return '$' + n.toLocaleString('en-US', {maximumFractionDigits:0}) + ' USD';
   }
   function pct(n){
     if (n === null || n === undefined || isNaN(n)) return 'n/a';
     return (n*100).toFixed(1) + '%';
+  }
+  function todayISO(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
   function daysSince(dateStr){
     if(!dateStr) return null;
@@ -267,25 +304,95 @@
     const q = Math.floor(now.getMonth()/3) + 1;
     return 'Q' + q + '-' + now.getFullYear();
   }
+  function nextQuarterKey(){
+    const now = new Date();
+    let q = Math.floor(now.getMonth()/3) + 1;
+    let y = now.getFullYear();
+    q += 1;
+    if(q > 4){ q = 1; y += 1; }
+    return 'Q' + q + '-' + y;
+  }
   function monthLabel(){
     const now = new Date();
     return now.toLocaleDateString('es-MX', {month:'short', year:'numeric'});
   }
+  function lastActivityDate(deal){
+    const acts = deal.actividades || [];
+    const dates = acts.map(a=>a.fecha).filter(Boolean).sort();
+    return dates.length ? dates[dates.length-1] : null;
+  }
+  function hasOverduePendingActivity(deal){
+    const acts = deal.actividades || [];
+    const t = todayISO();
+    return acts.some(a => !a.completada && a.fecha && a.fecha <= t);
+  }
+  function overduePendingCount(deal){
+    const acts = deal.actividades || [];
+    const t = todayISO();
+    return acts.filter(a => !a.completada && a.fecha && a.fecha <= t).length;
+  }
+  function tipoClass(tipo){
+    const map = {
+      'Suscripción':'badge-tipo-suscripcion', 'Implementación':'badge-tipo-implementacion',
+      'AMS':'badge-tipo-ams', 'Renovación':'badge-tipo-renovacion',
+      'Roll-Out':'badge-tipo-rollout', 'Bolsa de horas':'badge-tipo-bolsadehoras'
+    };
+    return map[tipo] || '';
+  }
+  function fcatBadge(fcat){
+    const map = {'Commit':'badge-commit','Probable':'badge-probable','Top Upside':'badge-topupside','Upside':'badge-upside'};
+    return `<span class="badge ${map[fcat]||''}">${fcat}</span>`;
+  }
+  function tipoBadge(tipo){
+    if(!tipo) return '<span class="ft-note">sin tipo</span>';
+    return `<span class="badge ${tipoClass(tipo)}">${tipo}</span>`;
+  }
+  function resultBadge(r){
+    const map = {'Abierta':'badge-abierta','Ganada':'badge-ganada','Perdida':'badge-perdida'};
+    return `<span class="badge ${map[r]||''}">${r}</span>`;
+  }
+  function computeAllowedFcats(etapa){
+    if(etapa === 'A - Closed-Ganado') return ['Commit'];
+    if(etapa === 'B - Contracting') return ['Commit'];
+    if(etapa === 'C - Negotiation') return ['Commit','Probable'];
+    return FCATS.slice();
+  }
+  function computeForcedResultado(etapa){
+    if(etapa === 'A - Closed-Ganado') return 'Ganada';
+    return null;
+  }
+  function quarterNumberFromKey(qKey){ return Number(qKey.split('-')[0].replace('Q','')); }
+  function getCuotaTrimestral(rep, qKey){
+    const q = state.config.quotas[rep] || {};
+    const n = quarterNumberFromKey(qKey);
+    return Number(q['q'+n] || 0);
+  }
+  function getCuotaAnual(rep){
+    return Number((state.config.quotas[rep]||{}).anual || 0);
+  }
+  function getCuotaMensualEstimate(rep, mKey){
+    const d = new Date(mKey + '-01T00:00:00');
+    const qn = Math.floor(d.getMonth()/3) + 1;
+    const trim = Number((state.config.quotas[rep]||{})['q'+qn] || 0);
+    return trim/3;
+  }
+  function yearKey(dateStr){
+    if(!dateStr) return null;
+    return '' + new Date(dateStr + 'T00:00:00').getFullYear();
+  }
+  function currentYearKey(){ return '' + new Date().getFullYear(); }
 
   let isConfigured = APP_CONFIG.API_URL.indexOf('REEMPLAZA') === -1;
   let isOnline = true;
 
   async function loadAll(){
     if(!isConfigured){
-      // Aún no se configuró el backend: usa localStorage como modo de prueba local
       try{
         const c = localStorage.getItem(CONFIG_KEY);
         if(c) state.config = JSON.parse(c);
-      }catch(e){}
-      try{
         const d = localStorage.getItem(DEALS_KEY);
         if(d) state.deals = JSON.parse(d);
-      }catch(e){ state.deals = []; }
+      }catch(e){}
       render();
       return;
     }
@@ -341,11 +448,7 @@
   }
 
   function exportData(){
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      config: state.config,
-      deals: state.deals
-    };
+    const payload = { exportedAt: new Date().toISOString(), config: state.config, deals: state.deals };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -401,32 +504,50 @@
       tab.classList.add('active');
       state.activeTab = tab.dataset.tab;
       state.editingId = null;
+      state.formActivities = [];
       render();
     });
   });
 
   // ---------- Computations ----------
-  function computeRepStats(rep){
-    const mKey = currentMonthKey(), qKey = currentQuarterKey();
-    const repDeals = state.deals.filter(d=>d.rep===rep);
-    const commitMes = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const bestMes = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const pipeline = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Pipeline').reduce((s,d)=>s+Number(d.monto||0),0);
-    const ganadoMes = repDeals.filter(d=>d.resultado==='Ganada' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const commitTrim = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const bestTrim = repDeals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const ganadoTrim = repDeals.filter(d=>d.resultado==='Ganada' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const stalled = repDeals.filter(d=>d.resultado==='Abierta' && daysSince(d.ultimaActividad) !== null && daysSince(d.ultimaActividad) > STALL_DAYS).length;
-    const q = state.config.quotas[rep] || {mensual:0, trimestral:0};
-    return {
-      commitMes, bestMes, totalMes: commitMes+bestMes, ganadoMes,
-      commitTrim, bestTrim, totalTrim: commitTrim+bestTrim, ganadoTrim,
-      pipeline, stalled,
-      cuotaMensual: Number(q.mensual||0), cuotaTrimestral: Number(q.trimestral||0),
-      pctMes: q.mensual ? (commitMes+bestMes+ganadoMes)/q.mensual : null,
-      pctTrim: q.trimestral ? (commitTrim+bestTrim+ganadoTrim)/q.trimestral : null,
-      coverage: q.mensual ? pipeline/q.mensual : null
-    };
+  function filterDealsByRep(rep){
+    return rep ? state.deals.filter(d=>d.rep===rep) : state.deals.slice();
+  }
+
+  function periodSummary(deals, periodKeyFn, periodVal){
+    const open = deals.filter(d=>d.resultado==='Abierta' && periodKeyFn(d.fecha)===periodVal);
+    const commit = open.filter(d=>d.fcat==='Commit').reduce((s,d)=>s+Number(d.monto||0),0);
+    const probable = open.filter(d=>d.fcat==='Probable').reduce((s,d)=>s+Number(d.monto||0),0);
+    const topUpside = open.filter(d=>d.fcat==='Top Upside').reduce((s,d)=>s+Number(d.monto||0),0);
+    const upside = open.filter(d=>d.fcat==='Upside').reduce((s,d)=>s+Number(d.monto||0),0);
+    const ganado = deals.filter(d=>d.resultado==='Ganada' && periodKeyFn(d.fecha)===periodVal).reduce((s,d)=>s+Number(d.monto||0),0);
+    return { commit, probable, topUpside, upside, ganado, total: commit+probable };
+  }
+
+  function repAllTimeStats(rep){
+    const deals = filterDealsByRep(rep);
+    const openDeals = deals.filter(d=>d.resultado==='Abierta');
+    const upsideAll = openDeals.filter(d=>d.fcat==='Top Upside'||d.fcat==='Upside').reduce((s,d)=>s+Number(d.monto||0),0);
+    const stalled = openDeals.filter(d=>{ const ds = daysSince(lastActivityDate(d)); return ds!==null && ds>STALL_DAYS; }).length;
+    const overdue = openDeals.filter(d=>hasOverduePendingActivity(d)).length;
+    const ganadas = deals.filter(d=>d.resultado==='Ganada').length;
+    const cuotaMensual = getCuotaMensualEstimate(rep, currentMonthKey());
+    const cuotaTrimestral = getCuotaTrimestral(rep, currentQuarterKey());
+    const cuotaAnual = getCuotaAnual(rep);
+    return { upsideAll, stalled, overdue, ganadas, cuotaMensual, cuotaTrimestral, cuotaAnual };
+  }
+
+  function tipoBreakdown(deals){
+    const won = deals.filter(d=>d.resultado==='Ganada');
+    const map = {};
+    TIPOS.forEach(t=>{ map[t] = {count:0, monto:0}; });
+    map['Sin tipo'] = {count:0, monto:0};
+    won.forEach(d=>{
+      const key = d.tipo && TIPOS.includes(d.tipo) ? d.tipo : 'Sin tipo';
+      map[key].count += 1;
+      map[key].monto += Number(d.monto||0);
+    });
+    return map;
   }
 
   function statusColor(p){
@@ -454,75 +575,146 @@
 
   function renderDashboard(){
     const reps = state.config.reps;
-    const mKey = currentMonthKey(), qKey = currentQuarterKey();
-
-    const teamCommitMes = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamBestMes = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamGanadoMes = state.deals.filter(d=>d.resultado==='Ganada' && monthKey(d.fecha)===mKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamQuotaMes = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).mensual||0),0);
-    const teamPctMes = teamQuotaMes ? (teamCommitMes+teamBestMes+teamGanadoMes)/teamQuotaMes : null;
-
-    const teamCommitTrim = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Commit' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamBestTrim = state.deals.filter(d=>d.resultado==='Abierta' && d.fcat==='Best Case' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamGanadoTrim = state.deals.filter(d=>d.resultado==='Ganada' && quarterKey(d.fecha)===qKey).reduce((s,d)=>s+Number(d.monto||0),0);
-    const teamQuotaTrim = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).trimestral||0),0);
-    const teamPctTrim = teamQuotaTrim ? (teamCommitTrim+teamBestTrim+teamGanadoTrim)/teamQuotaTrim : null;
-
-    const cMes = statusColor(teamPctMes);
-    const cTrim = statusColor(teamPctTrim);
-
-    const stalledDeals = state.deals.filter(d=>d.resultado==='Abierta' && daysSince(d.ultimaActividad)!==null && daysSince(d.ultimaActividad)>STALL_DAYS)
-      .sort((a,b)=>daysSince(b.ultimaActividad)-daysSince(a.ultimaActividad));
+    const scope = state.dashboardScope;
+    const scopeRep = scope === '__team__' ? null : scope;
+    const scopeDeals = filterDealsByRep(scopeRep);
 
     let html = '';
+
+    // ---- Selector de vista ----
+    html += `<div class="ft-scope-bar">
+      <label style="font-size:12px; font-weight:600; color:var(--grey-text);">Ver:</label>
+      <select id="ft-scope-select">
+        <option value="__team__" ${scope==='__team__'?'selected':''}>Equipo (todos)</option>
+        ${reps.map(r=>`<option value="${r}" ${scope===r?'selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>`;
+
+    const mKey = currentMonthKey(), qKey = currentQuarterKey(), nqKey = nextQuarterKey(), yKey = currentYearKey();
+    const sMes = periodSummary(scopeDeals, monthKey, mKey);
+    const sTrim = periodSummary(scopeDeals, quarterKey, qKey);
+    const sNextTrim = periodSummary(scopeDeals, quarterKey, nqKey);
+    const sYear = periodSummary(scopeDeals, yearKey, yKey);
+
+    let cuotaMes, cuotaTrim, cuotaNextTrim, cuotaAnual;
+    if(scopeRep){
+      cuotaMes = getCuotaMensualEstimate(scopeRep, mKey);
+      cuotaTrim = getCuotaTrimestral(scopeRep, qKey);
+      cuotaNextTrim = getCuotaTrimestral(scopeRep, nqKey);
+      cuotaAnual = getCuotaAnual(scopeRep);
+    } else {
+      cuotaMes = reps.reduce((s,r)=>s+getCuotaMensualEstimate(r, mKey),0);
+      cuotaTrim = reps.reduce((s,r)=>s+getCuotaTrimestral(r, qKey),0);
+      cuotaNextTrim = reps.reduce((s,r)=>s+getCuotaTrimestral(r, nqKey),0);
+      cuotaAnual = reps.reduce((s,r)=>s+getCuotaAnual(r),0);
+    }
+    const pctMes = cuotaMes ? (sMes.commit+sMes.probable+sMes.ganado)/cuotaMes : null;
+    const pctTrim = cuotaTrim ? (sTrim.commit+sTrim.probable+sTrim.ganado)/cuotaTrim : null;
+    const pctAnual = cuotaAnual ? sYear.ganado/cuotaAnual : null;
+    const cMes = statusColor(pctMes), cTrim = statusColor(pctTrim), cAnual = statusColor(pctAnual);
+
+    html += `<div class="ft-section-title" style="margin-top:0"><span class="bar"></span>Resumen del año en curso (${yKey})</div>`;
+    html += `<div class="ft-grid">
+      <div class="ft-card"><div class="label">Ganado en el año (YTD)</div><div class="value">${money(sYear.ganado)}</div></div>
+      <div class="ft-card"><div class="label">Commit + Probable abierto (año)</div><div class="value">${money(sYear.commit+sYear.probable)}</div></div>
+      <div class="ft-card"><div class="label">Cuota anual</div><div class="value">${money(cuotaAnual)}</div></div>
+      <div class="ft-card">
+        <div class="label">% Cuota anual cubierto (solo ganado)</div>
+        <div class="value" style="color:${cAnual.fg}">${pct(pctAnual)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctAnual||0)*100)}%; background:${cAnual.fg}"></div></div>
+      </div>
+    </div>`;
+
     html += `<div class="ft-section-title"><span class="bar"></span>Resumen del mes en curso (${monthLabel()})</div>`;
     html += `<div class="ft-grid">
-      <div class="ft-card"><div class="label">Commit</div><div class="value">${money(teamCommitMes)}</div></div>
-      <div class="ft-card"><div class="label">Best Case</div><div class="value">${money(teamBestMes)}</div></div>
-      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(teamGanadoMes)}</div></div>
-      <div class="ft-card"><div class="label">Cuota del equipo</div><div class="value">${money(teamQuotaMes)}</div></div>
+      <div class="ft-card"><div class="label">Commit (Worst Case)</div><div class="value">${money(sMes.commit)}</div></div>
+      <div class="ft-card"><div class="label">Probable (Best Case)</div><div class="value">${money(sMes.probable)}</div></div>
+      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sMes.ganado)}</div></div>
+      <div class="ft-card"><div class="label">Cuota (estimada, cuota Q ÷ 3)</div><div class="value">${money(cuotaMes)}</div></div>
       <div class="ft-card">
         <div class="label">% Cuota cubierto</div>
-        <div class="value" style="color:${cMes.fg}">${pct(teamPctMes)}</div>
-        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(teamPctMes||0)*100)}%; background:${cMes.fg}"></div></div>
+        <div class="value" style="color:${cMes.fg}">${pct(pctMes)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctMes||0)*100)}%; background:${cMes.fg}"></div></div>
       </div>
     </div>`;
 
     html += `<div class="ft-section-title"><span class="bar"></span>Resumen del trimestre en curso (${qKey})</div>`;
     html += `<div class="ft-grid">
-      <div class="ft-card"><div class="label">Commit</div><div class="value">${money(teamCommitTrim)}</div></div>
-      <div class="ft-card"><div class="label">Best Case</div><div class="value">${money(teamBestTrim)}</div></div>
-      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(teamGanadoTrim)}</div></div>
-      <div class="ft-card"><div class="label">Cuota del equipo</div><div class="value">${money(teamQuotaTrim)}</div></div>
+      <div class="ft-card"><div class="label">Commit (Worst Case)</div><div class="value">${money(sTrim.commit)}</div></div>
+      <div class="ft-card"><div class="label">Probable (Best Case)</div><div class="value">${money(sTrim.probable)}</div></div>
+      <div class="ft-card"><div class="label">Ya ganado</div><div class="value">${money(sTrim.ganado)}</div></div>
+      <div class="ft-card"><div class="label">Cuota ${qKey}</div><div class="value">${money(cuotaTrim)}</div></div>
       <div class="ft-card">
         <div class="label">% Cuota cubierto</div>
-        <div class="value" style="color:${cTrim.fg}">${pct(teamPctTrim)}</div>
-        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(teamPctTrim||0)*100)}%; background:${cTrim.fg}"></div></div>
+        <div class="value" style="color:${cTrim.fg}">${pct(pctTrim)}</div>
+        <div class="ft-progress"><div class="ft-progress-fill" style="width:${Math.min(100,(pctTrim||0)*100)}%; background:${cTrim.fg}"></div></div>
       </div>
     </div>`;
 
-    html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (mes actual)</div>`;
-    html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
-      <th>Rep</th><th>Cuota mensual</th><th>Commit</th><th>Best Case</th><th>Pipeline</th>
-      <th>Total esperado</th><th>% Cuota</th><th>Coverage</th><th>Estancadas</th>
-    </tr></thead><tbody>`;
-    reps.forEach(rep=>{
-      const s = computeRepStats(rep);
-      const c = statusColor(s.pctMes);
-      html += `<tr>
-        <td><strong>${rep}</strong></td>
-        <td>${money(s.cuotaMensual)}</td>
-        <td>${money(s.commitMes)}</td>
-        <td>${money(s.bestMes)}</td>
-        <td>${money(s.pipeline)}</td>
-        <td>${money(s.totalMes)}</td>
-        <td><span class="badge" style="background:${c.bg}; color:${c.fg}">${pct(s.pctMes)}</span></td>
-        <td>${s.coverage===null?'n/a':s.coverage.toFixed(1)+'x'}</td>
-        <td>${s.stalled>0 ? `<span class="badge badge-stalled">${s.stalled} ⚠️</span>` : '0'}</td>
-      </tr>`;
+    html += `<div class="ft-section-title"><span class="bar"></span>Resumen del próximo trimestre — Q+1 (${nqKey})</div>`;
+    html += `<div class="ft-grid">
+      <div class="ft-card"><div class="label">Commit (Worst Case)</div><div class="value">${money(sNextTrim.commit)}</div></div>
+      <div class="ft-card"><div class="label">Probable (Best Case)</div><div class="value">${money(sNextTrim.probable)}</div></div>
+      <div class="ft-card"><div class="label">Total esperado</div><div class="value">${money(sNextTrim.total)}</div></div>
+      <div class="ft-card"><div class="label">Cuota ${nqKey}</div><div class="value">${money(cuotaNextTrim)}</div></div>
+    </div>`;
+
+    if(!scopeRep){
+      html += `<div class="ft-section-title"><span class="bar"></span>Detalle por rep (mes actual)</div>`;
+      html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+        <th>Rep</th><th>Cuota mensual</th><th>Commit (Worst Case)</th><th>Probable (Best Case)</th>
+        <th>Upside total</th><th>Total esperado</th><th>% Cuota</th><th>Coverage</th>
+        <th>Ganadas (#)</th><th>Estancadas</th><th>Activ. vencidas</th>
+      </tr></thead><tbody>`;
+      reps.forEach(rep=>{
+        const rMes = periodSummary(filterDealsByRep(rep), monthKey, mKey);
+        const all = repAllTimeStats(rep);
+        const p = all.cuotaMensual ? (rMes.commit+rMes.probable+rMes.ganado)/all.cuotaMensual : null;
+        const cov = all.cuotaMensual ? all.upsideAll/all.cuotaMensual : null;
+        const c = statusColor(p);
+        html += `<tr>
+          <td><strong>${rep}</strong></td>
+          <td>${money(all.cuotaMensual)}</td>
+          <td>${money(rMes.commit)}</td>
+          <td>${money(rMes.probable)}</td>
+          <td>${money(all.upsideAll)}</td>
+          <td>${money(rMes.commit+rMes.probable)}</td>
+          <td><span class="badge" style="background:${c.bg}; color:${c.fg}">${pct(p)}</span></td>
+          <td>${cov===null?'n/a':cov.toFixed(1)+'x'}</td>
+          <td>${all.ganadas}</td>
+          <td>${all.stalled>0 ? `<span class="badge badge-stalled">${all.stalled} ⚠️</span>` : '0'}</td>
+          <td>${all.overdue>0 ? `<span class="badge badge-overdue">${all.overdue} ⏰</span>` : '0'}</td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`;
+    } else {
+      const all = repAllTimeStats(scopeRep);
+      const p = all.cuotaMensual ? (sMes.commit+sMes.probable+sMes.ganado)/all.cuotaMensual : null;
+      const cov = all.cuotaMensual ? all.upsideAll/all.cuotaMensual : null;
+      html += `<div class="ft-section-title"><span class="bar"></span>KPIs de ${scopeRep}</div>`;
+      html += `<div class="ft-grid">
+        <div class="ft-card"><div class="label">Upside total (Top Upside + Upside)</div><div class="value">${money(all.upsideAll)}</div></div>
+        <div class="ft-card"><div class="label">Coverage (Upside / Cuota mensual)</div><div class="value">${cov===null?'n/a':cov.toFixed(1)+'x'}</div></div>
+        <div class="ft-card"><div class="label">Oportunidades ganadas (total)</div><div class="value">${all.ganadas}</div></div>
+        <div class="ft-card"><div class="label">Estancadas</div><div class="value" style="color:${all.stalled>0?'var(--red)':'inherit'}">${all.stalled}</div></div>
+        <div class="ft-card"><div class="label">Actividades vencidas</div><div class="value" style="color:${all.overdue>0?'var(--orange)':'inherit'}">${all.overdue}</div></div>
+      </div>`;
+    }
+
+    html += `<div class="ft-section-title"><span class="bar"></span>Cierres por tipo de oportunidad ${scopeRep?'— '+scopeRep:'— equipo'}</div>`;
+    const tb = tipoBreakdown(scopeDeals);
+    html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr><th>Tipo</th><th># Cerradas</th><th>Monto total</th></tr></thead><tbody>`;
+    Object.keys(tb).forEach(tipo=>{
+      if(tb[tipo].count===0) return;
+      html += `<tr><td>${tipo==='Sin tipo'?'<span class="ft-note">Sin tipo</span>':tipoBadge(tipo)}</td><td>${tb[tipo].count}</td><td>${money(tb[tipo].monto)}</td></tr>`;
     });
+    if(Object.values(tb).every(v=>v.count===0)){
+      html += `<tr><td colspan="3" class="ft-empty">Aún no hay oportunidades ganadas en este alcance.</td></tr>`;
+    }
     html += `</tbody></table></div>`;
 
+    const stalledDeals = scopeDeals.filter(d=>d.resultado==='Abierta' && daysSince(lastActivityDate(d))!==null && daysSince(lastActivityDate(d))>STALL_DAYS)
+      .sort((a,b)=>daysSince(lastActivityDate(b))-daysSince(lastActivityDate(a)));
     html += `<div class="ft-section-title"><span class="bar"></span>Oportunidades estancadas (&gt;${STALL_DAYS} d&iacute;as sin actividad)</div>`;
     if(stalledDeals.length===0){
       html += `<div class="ft-empty">Ninguna oportunidad abierta lleva más de ${STALL_DAYS} días sin actividad. 👍</div>`;
@@ -532,29 +724,107 @@
       </tr></thead><tbody>`;
       stalledDeals.forEach(d=>{
         html += `<tr>
-          <td>${d.rep}</td><td>${d.cliente}</td><td>${d.oportunidad}</td>
-          <td><span class="badge badge-stalled">${daysSince(d.ultimaActividad)} d&iacute;as</span></td>
+          <td>${d.rep}</td><td>${d.cliente||'—'}</td><td>${d.oportunidad}</td>
+          <td><span class="badge badge-stalled">${daysSince(lastActivityDate(d))} d&iacute;as</span></td>
           <td>${d.rtc||'<em>sin definir</em>'}</td>
         </tr>`;
       });
       html += `</tbody></table></div>`;
     }
 
+    const overdueDeals = scopeDeals.filter(d=>d.resultado==='Abierta' && hasOverduePendingActivity(d));
+    html += `<div class="ft-section-title"><span class="bar"></span>Actividades pendientes vencidas (no marcadas como completadas)</div>`;
+    if(overdueDeals.length===0){
+      html += `<div class="ft-empty">No hay actividades pendientes vencidas. 👍</div>`;
+    } else {
+      html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
+        <th>Rep</th><th>Oportunidad</th><th>Actividades vencidas</th><th>Detalle</th>
+      </tr></thead><tbody>`;
+      overdueDeals.forEach(d=>{
+        const t = todayISO();
+        const pend = (d.actividades||[]).filter(a=>!a.completada && a.fecha && a.fecha<=t);
+        html += `<tr>
+          <td>${d.rep}</td><td>${d.oportunidad}</td>
+          <td><span class="badge badge-overdue">${pend.length} ⏰</span></td>
+          <td>${pend.map(a=>`${a.descripcion||'(sin descripción)'} — ${a.fecha}`).join('<br>')}</td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+
     body.innerHTML = html;
+
+    document.getElementById('ft-scope-select').addEventListener('change', (e)=>{
+      state.dashboardScope = e.target.value;
+      renderDashboard();
+    });
   }
 
-  function fcatBadge(fcat){
-    const map = {'Commit':'badge-commit','Best Case':'badge-bestcase','Pipeline':'badge-pipeline','Omitted':'badge-omitted'};
-    return `<span class="badge ${map[fcat]||''}">${fcat}</span>`;
+  function renderActivitiesUI(){
+    const container = document.getElementById('ft-activities-list');
+    if(!container) return;
+    if(state.formActivities.length===0){
+      container.innerHTML = `<div class="ft-note" style="margin-bottom:8px;">Sin actividades registradas todavía.</div>`;
+    } else {
+      container.innerHTML = state.formActivities.map((a,i)=>`
+        <div class="ft-activity-row" data-idx="${i}">
+          <input type="text" class="ft-act-desc" placeholder="Descripción de la actividad" value="${(a.descripcion||'').replace(/"/g,'&quot;')}">
+          <input type="date" class="ft-act-fecha" value="${a.fecha||''}">
+          <label class="ft-act-done"><input type="checkbox" class="ft-act-check" ${a.completada?'checked':''}> Completada</label>
+          <button type="button" class="ft-btn danger tiny ft-act-remove" title="Quitar">✕</button>
+        </div>
+      `).join('');
+      container.querySelectorAll('.ft-activity-row').forEach(row=>{
+        const idx = Number(row.dataset.idx);
+        row.querySelector('.ft-act-desc').addEventListener('input', (e)=>{ state.formActivities[idx].descripcion = e.target.value; });
+        row.querySelector('.ft-act-fecha').addEventListener('change', (e)=>{ state.formActivities[idx].fecha = e.target.value; });
+        row.querySelector('.ft-act-check').addEventListener('change', (e)=>{ state.formActivities[idx].completada = e.target.checked; });
+        row.querySelector('.ft-act-remove').addEventListener('click', ()=>{ state.formActivities.splice(idx,1); renderActivitiesUI(); });
+      });
+    }
   }
-  function resultBadge(r){
-    const map = {'Abierta':'badge-abierta','Ganada':'badge-ganada','Perdida':'badge-perdida'};
-    return `<span class="badge ${map[r]||''}">${r}</span>`;
+
+  function refreshFcatOptions(){
+    const etapaSel = document.getElementById('ft-etapa-select');
+    const fcatSel = document.getElementById('ft-fcat-select');
+    if(!etapaSel || !fcatSel) return;
+    const allowed = computeAllowedFcats(etapaSel.value);
+    const prev = fcatSel.value;
+    fcatSel.innerHTML = allowed.map(f=>`<option value="${f}" ${f===prev?'selected':''}>${f}</option>`).join('');
+    if(!allowed.includes(prev)){
+      fcatSel.value = allowed[0];
+    }
+    fcatSel.disabled = allowed.length===1;
+  }
+  function refreshResultadoField(){
+    const etapaSel = document.getElementById('ft-etapa-select');
+    const resSel = document.getElementById('ft-resultado-select');
+    if(!etapaSel || !resSel) return;
+    const forced = computeForcedResultado(etapaSel.value);
+    if(forced){
+      resSel.value = forced;
+      resSel.disabled = true;
+    } else {
+      resSel.disabled = false;
+    }
+  }
+  function refreshEtapaDependentFields(){
+    refreshFcatOptions();
+    refreshResultadoField();
   }
 
   function renderOportunidades(){
     const editing = state.editingId ? state.deals.find(d=>d.id===state.editingId) : null;
     const reps = state.config.reps;
+    if(!state.editingId && state.formActivities===undefined) state.formActivities = [];
+    if(editing && state.formActivities.__loadedFor !== editing.id){
+      state.formActivities = JSON.parse(JSON.stringify(editing.actividades || []));
+      state.formActivities.__loadedFor = editing.id;
+    }
+    if(!editing && state.formActivities.__loadedFor !== 'new'){
+      state.formActivities = [];
+      state.formActivities.__loadedFor = 'new';
+    }
 
     let html = '';
     html += `<div class="ft-form-box">
@@ -564,29 +834,46 @@
           <div class="ft-field"><label>Rep</label>
             <select name="rep" required>${reps.map(r=>`<option value="${r}" ${editing&&editing.rep===r?'selected':''}>${r}</option>`).join('')}</select>
           </div>
-          <div class="ft-field"><label>Cliente</label><input name="cliente" required value="${editing?editing.cliente:''}"></div>
+          <div class="ft-field"><label>Cliente</label><input name="cliente" value="${editing?(editing.cliente||''):''}"></div>
           <div class="ft-field"><label>Oportunidad</label><input name="oportunidad" required value="${editing?editing.oportunidad:''}"></div>
           <div class="ft-field"><label>Etapa GSG</label>
-            <select name="etapa">${GSG_STAGES.map(s=>`<option ${editing&&editing.etapa===s?'selected':''}>${s}</option>`).join('')}</select>
+            <select name="etapa" id="ft-etapa-select">${GSG_STAGES.map(s=>`<option ${editing&&editing.etapa===s?'selected':''}>${s}</option>`).join('')}</select>
           </div>
           <div class="ft-field"><label>Forecast Category</label>
-            <select name="fcat">${FCATS.map(s=>`<option ${editing&&editing.fcat===s?'selected':''}>${s}</option>`).join('')}</select>
+            <select name="fcat" id="ft-fcat-select">${(function(){
+              const initEtapa = editing ? editing.etapa : GSG_STAGES[0];
+              const allowed = computeAllowedFcats(initEtapa);
+              const initVal = editing && allowed.includes(editing.fcat) ? editing.fcat : allowed[0];
+              return allowed.map(f=>`<option value="${f}" ${f===initVal?'selected':''}>${f}</option>`).join('');
+            })()}</select>
           </div>
-          <div class="ft-field"><label>Monto (MXN)</label><input type="number" name="monto" min="0" step="1000" required value="${editing?editing.monto:''}"></div>
+          <div class="ft-field"><label>Tipo de oportunidad</label>
+            <select name="tipo">${TIPOS.map(t=>`<option ${editing&&editing.tipo===t?'selected':''}>${t}</option>`).join('')}</select>
+          </div>
+          <div class="ft-field"><label>Monto (USD)</label><input type="number" name="monto" min="0" step="100" required value="${editing?editing.monto:''}"></div>
           <div class="ft-field"><label>Fecha cierre estimada</label><input type="date" name="fecha" required value="${editing?editing.fecha:''}"></div>
           <div class="ft-field"><label>Fecha pr&oacute;ximo paso</label><input type="date" name="fechaProximoPaso" value="${editing?(editing.fechaProximoPaso||''):''}"></div>
-          <div class="ft-field"><label>&Uacute;ltima actividad</label><input type="date" name="ultimaActividad" value="${editing?(editing.ultimaActividad||''):''}"></div>
           <div class="ft-field"><label>Resultado</label>
-            <select name="resultado">${RESULTS.map(s=>`<option ${editing&&editing.resultado===s?'selected':''}>${s}</option>`).join('')}</select>
+            <select name="resultado" id="ft-resultado-select">${RESULTS.map(s=>`<option ${editing&&editing.resultado===s?'selected':''}>${s}</option>`).join('')}</select>
           </div>
         </div>
         <div class="ft-field" style="margin-bottom:12px;"><label>RTC &mdash; Pr&oacute;ximo paso</label><textarea name="rtc">${editing?editing.rtc||'':''}</textarea></div>
+
+        <div class="ft-field" style="margin-bottom:14px;">
+          <label>Actividades</label>
+          <div id="ft-activities-list"></div>
+          <button type="button" class="ft-btn secondary tiny" id="ft-add-activity">+ Agregar actividad</button>
+          <div class="ft-note">Si una actividad tiene fecha vencida y no está marcada "Completada", aparecerá como alerta en el Dashboard.</div>
+        </div>
+
         <div class="ft-field" style="margin-bottom:12px;">
           <label>MEDDPICC m&iacute;nimo</label>
           <div class="ft-toggle-row">
             <div class="ft-toggle ${editing&&editing.eb?'on':''}" data-field="eb">Economic Buyer confirmado</div>
             <div class="ft-toggle ${editing&&editing.champion?'on':''}" data-field="champion">Champion confirmado</div>
             <div class="ft-toggle ${editing&&editing.pain?'on':''}" data-field="pain">Dolor/Pain documentado</div>
+            <div class="ft-toggle ${editing&&editing.presupuesto?'on':''}" data-field="presupuesto">Presupuesto confirmado</div>
+            <div class="ft-toggle ${editing&&editing.competidor?'on-warn':''}" data-field="competidor" data-warn="1">Competidor activo</div>
           </div>
         </div>
         <div class="ft-field" style="margin-bottom:14px;"><label>Comentarios</label><textarea name="comentarios">${editing?editing.comentarios||'':''}</textarea></div>
@@ -601,20 +888,20 @@
       <span class="ft-note">${state.deals.length} oportunidad(es) registradas</span>
     </div>`;
 
-    const filterRep = document.getElementById('ft-filter-rep-val') ? document.getElementById('ft-filter-rep-val').value : '';
     html += `<div class="ft-table-wrap"><table class="ft-table" id="ft-deals-table"><thead><tr>
-      <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Monto</th>
+      <th>Rep</th><th>Cliente</th><th>Oportunidad</th><th>Etapa</th><th>Forecast</th><th>Tipo</th><th>Monto</th>
       <th>Cierre</th><th>D&iacute;as s/actividad</th><th>Resultado</th><th></th>
     </tr></thead><tbody>
-    ${state.deals.length===0 ? `<tr><td colspan="10" class="ft-empty">Sin oportunidades registradas todav&iacute;a. Agrega la primera arriba.</td></tr>` :
+    ${state.deals.length===0 ? `<tr><td colspan="11" class="ft-empty">Sin oportunidades registradas todav&iacute;a. Agrega la primera arriba.</td></tr>` :
       state.deals.map(d=>{
-        const ds = daysSince(d.ultimaActividad);
+        const ds = daysSince(lastActivityDate(d));
         const stalled = d.resultado==='Abierta' && ds!==null && ds>STALL_DAYS;
+        const overdue = d.resultado==='Abierta' && hasOverduePendingActivity(d);
         return `<tr data-rep="${d.rep}" data-result="${d.resultado}">
-          <td>${d.rep}</td><td>${d.cliente}</td><td>${d.oportunidad}</td>
-          <td>${d.etapa}</td><td>${fcatBadge(d.fcat)}</td><td>${money(d.monto)}</td>
+          <td>${d.rep}</td><td>${d.cliente||'—'}</td><td>${d.oportunidad}</td>
+          <td>${d.etapa}</td><td>${fcatBadge(d.fcat)}</td><td>${tipoBadge(d.tipo)}</td><td>${money(d.monto)}</td>
           <td>${d.fecha}</td>
-          <td>${ds===null?'—':(stalled?`<span class="badge badge-stalled">${ds} ⚠️</span>`:ds)}</td>
+          <td>${ds===null?'—':(stalled?`<span class="badge badge-stalled">${ds} ⚠️</span>`:ds)}${overdue?` <span class="badge badge-overdue">⏰</span>`:''}</td>
           <td>${resultBadge(d.resultado)}</td>
           <td style="white-space:nowrap;">
             <button class="ft-btn secondary tiny" data-edit="${d.id}">Editar</button>
@@ -626,19 +913,33 @@
 
     body.innerHTML = html;
 
+    refreshEtapaDependentFields();
+    document.getElementById('ft-etapa-select').addEventListener('change', refreshEtapaDependentFields);
+    renderActivitiesUI();
+    document.getElementById('ft-add-activity').addEventListener('click', ()=>{
+      state.formActivities.push({descripcion:'', fecha:'', completada:false});
+      renderActivitiesUI();
+    });
+
     document.getElementById('ft-deal-form').addEventListener('submit', async (e)=>{
       e.preventDefault();
       const fd = new FormData(e.target);
+      const cleanActivities = state.formActivities
+        .filter(a=>a && (a.descripcion || a.fecha))
+        .map(a=>({descripcion:a.descripcion||'', fecha:a.fecha||'', completada: !!a.completada}));
       const deal = {
         id: editing ? editing.id : uid(),
         rep: fd.get('rep'), cliente: fd.get('cliente'), oportunidad: fd.get('oportunidad'),
-        etapa: fd.get('etapa'), fcat: fd.get('fcat'), monto: Number(fd.get('monto')||0),
+        etapa: fd.get('etapa'), fcat: document.getElementById('ft-fcat-select').value, tipo: fd.get('tipo'), monto: Number(fd.get('monto')||0),
         fecha: fd.get('fecha'), fechaProximoPaso: fd.get('fechaProximoPaso'),
-        ultimaActividad: fd.get('ultimaActividad'), resultado: fd.get('resultado'),
+        resultado: document.getElementById('ft-resultado-select').value,
         rtc: fd.get('rtc'), comentarios: fd.get('comentarios'),
+        actividades: cleanActivities,
         eb: e.target.querySelector('[data-field="eb"]').classList.contains('on'),
         champion: e.target.querySelector('[data-field="champion"]').classList.contains('on'),
         pain: e.target.querySelector('[data-field="pain"]').classList.contains('on'),
+        presupuesto: e.target.querySelector('[data-field="presupuesto"]').classList.contains('on'),
+        competidor: e.target.querySelector('[data-field="competidor"]').classList.contains('on-warn'),
       };
       if(editing){
         const idx = state.deals.findIndex(d=>d.id===editing.id);
@@ -647,21 +948,25 @@
         state.deals.push(deal);
       }
       state.editingId = null;
+      state.formActivities = [];
       await saveDeals();
       render();
     });
 
     document.querySelectorAll('[data-field]').forEach(t=>{
-      t.addEventListener('click', ()=> t.classList.toggle('on'));
+      t.addEventListener('click', ()=>{
+        if(t.dataset.warn){ t.classList.toggle('on-warn'); }
+        else { t.classList.toggle('on'); }
+      });
     });
 
     if(editing){
       const cancelBtn = document.getElementById('ft-cancel-edit');
-      if(cancelBtn) cancelBtn.addEventListener('click', ()=>{ state.editingId=null; render(); });
+      if(cancelBtn) cancelBtn.addEventListener('click', ()=>{ state.editingId=null; state.formActivities=[]; render(); });
     }
 
     document.querySelectorAll('[data-edit]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{ state.editingId = btn.dataset.edit; render(); window.scrollTo(0,0); });
+      btn.addEventListener('click', ()=>{ state.editingId = btn.dataset.edit; state.formActivities = []; render(); window.scrollTo(0,0); });
     });
     document.querySelectorAll('[data-del]').forEach(btn=>{
       btn.addEventListener('click', async ()=>{
@@ -688,37 +993,63 @@
 
   function renderCuotas(){
     const reps = state.config.reps;
-    let html = `<div class="ft-section-title" style="margin-top:0"><span class="bar"></span>Reps y cuotas</div>`;
+    let html = `<div class="ft-section-title" style="margin-top:0"><span class="bar"></span>Reps y cuotas (USD)</div>`;
+    html += `<div class="ft-note" style="margin-bottom:10px;">Captura la cuota anual y la cuota de cada trimestre por separado — no tienen que ser iguales entre sí (útil si hay estacionalidad). El botón "÷4" reparte la cuota anual en partes iguales entre los 4 trimestres, como punto de partida.</div>`;
     html += `<div class="ft-table-wrap"><table class="ft-table"><thead><tr>
-      <th>Rep</th><th>Cuota mensual (MXN)</th><th>Cuota trimestral (MXN)</th><th></th>
+      <th>Rep</th><th>Cuota anual</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th></th>
     </tr></thead><tbody>`;
     reps.forEach((rep, i)=>{
-      const q = state.config.quotas[rep] || {mensual:0, trimestral:0};
+      const q = state.config.quotas[rep] || {};
+      const inputStyle = "border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:110px;";
       html += `<tr>
-        <td><input class="ft-rep-name" data-idx="${i}" value="${rep}" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
-        <td><input type="number" class="ft-quota-mes" data-rep="${rep}" value="${q.mensual||0}" min="0" step="1000" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
-        <td><input type="number" class="ft-quota-trim" data-rep="${rep}" value="${q.trimestral||0}" min="0" step="1000" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:140px;"></td>
-        <td><button class="ft-btn danger" data-remove-rep="${rep}">Quitar</button></td>
+        <td><input class="ft-rep-name" data-idx="${i}" value="${rep}" style="border:1px solid var(--grey-line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:150px;"></td>
+        <td><input type="number" class="ft-quota-anual" data-rep="${rep}" value="${q.anual||0}" min="0" step="1000" style="${inputStyle} width:130px;"></td>
+        <td><input type="number" class="ft-quota-q1" data-rep="${rep}" value="${q.q1||0}" min="0" step="500" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q2" data-rep="${rep}" value="${q.q2||0}" min="0" step="500" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q3" data-rep="${rep}" value="${q.q3||0}" min="0" step="500" style="${inputStyle}"></td>
+        <td><input type="number" class="ft-quota-q4" data-rep="${rep}" value="${q.q4||0}" min="0" step="500" style="${inputStyle}"></td>
+        <td style="white-space:nowrap;">
+          <button class="ft-btn secondary tiny" data-split-rep="${rep}" title="Repartir cuota anual entre Q1-Q4 en partes iguales">÷4</button>
+          <button class="ft-btn danger" data-remove-rep="${rep}">Quitar</button>
+        </td>
       </tr>`;
     });
-    const totMes = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).mensual||0),0);
-    const totTrim = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).trimestral||0),0);
-    html += `<tr style="background:var(--grey-bg); font-weight:600;"><td>Total equipo</td><td>${money(totMes)}</td><td>${money(totTrim)}</td><td></td></tr>`;
+    const totAnual = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).anual||0),0);
+    const totQ1 = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).q1||0),0);
+    const totQ2 = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).q2||0),0);
+    const totQ3 = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).q3||0),0);
+    const totQ4 = reps.reduce((s,r)=>s+Number((state.config.quotas[r]||{}).q4||0),0);
+    html += `<tr style="background:var(--grey-bg); font-weight:600;"><td>Total equipo</td><td>${money(totAnual)}</td><td>${money(totQ1)}</td><td>${money(totQ2)}</td><td>${money(totQ3)}</td><td>${money(totQ4)}</td><td></td></tr>`;
     html += `</tbody></table></div>`;
-    html += `<div style="margin-top:14px; display:flex; gap:10px;">
+    html += `<div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
       <button class="ft-btn secondary" id="ft-add-rep">+ Agregar rep</button>
       <button class="ft-btn" id="ft-save-cuotas">Guardar cambios</button>
+      <button class="ft-btn secondary" id="ft-seed-data" style="border-color:var(--amber); color:var(--amber);">🔄 Cargar datos de ejemplo (SEIDOR)</button>
     </div>`;
     html += `<div class="ft-note">Los nombres de rep deben coincidir exactamente con los que uses en "Oportunidades" para que el Dashboard sume correctamente.</div>`;
+    html += `<div class="ft-note">"Cargar datos de ejemplo" reemplaza reps y oportunidades actuales por las 53 oportunidades ya ganadas cargadas desde tu export de HubSpot (Fernanda Richards, Natalia Ossa, Estefanía Muñoz, Manuel Apón). Úsalo solo si quieres reiniciar con esos datos — es una acción destructiva.</div>`;
 
     body.innerHTML = html;
+
+    document.querySelectorAll('[data-split-rep]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const rep = btn.dataset.splitRep;
+        const row = btn.closest('tr');
+        const anualInput = document.querySelector(`.ft-quota-anual[data-rep="${rep}"]`);
+        const parte = Math.round(Number(anualInput.value||0) / 4);
+        document.querySelector(`.ft-quota-q1[data-rep="${rep}"]`).value = parte;
+        document.querySelector(`.ft-quota-q2[data-rep="${rep}"]`).value = parte;
+        document.querySelector(`.ft-quota-q3[data-rep="${rep}"]`).value = parte;
+        document.querySelector(`.ft-quota-q4[data-rep="${rep}"]`).value = parte;
+      });
+    });
 
     document.getElementById('ft-add-rep').addEventListener('click', async ()=>{
       let n = 1;
       let name = 'Nuevo Rep';
       while(state.config.reps.includes(name)){ n++; name = 'Nuevo Rep ' + n; }
       state.config.reps.push(name);
-      state.config.quotas[name] = {mensual:0, trimestral:0};
+      state.config.quotas[name] = {anual:0, q1:0, q2:0, q3:0, q4:0};
       await saveConfig();
       render();
     });
@@ -742,17 +1073,14 @@
       });
       const oldReps = state.config.reps;
       const newQuotas = {};
-      document.querySelectorAll('.ft-quota-mes').forEach((input, i)=>{
-        const rep = newReps[i];
-        newQuotas[rep] = newQuotas[rep] || {};
-        newQuotas[rep].mensual = Number(input.value||0);
+      const fields = [['ft-quota-anual','anual'],['ft-quota-q1','q1'],['ft-quota-q2','q2'],['ft-quota-q3','q3'],['ft-quota-q4','q4']];
+      fields.forEach(([cls, key])=>{
+        document.querySelectorAll('.'+cls).forEach((input, i)=>{
+          const rep = newReps[i];
+          newQuotas[rep] = newQuotas[rep] || {};
+          newQuotas[rep][key] = Number(input.value||0);
+        });
       });
-      document.querySelectorAll('.ft-quota-trim').forEach((input, i)=>{
-        const rep = newReps[i];
-        newQuotas[rep] = newQuotas[rep] || {};
-        newQuotas[rep].trimestral = Number(input.value||0);
-      });
-      // rename reps in existing deals if names changed
       oldReps.forEach((oldRep, i)=>{
         const newRep = newReps[i];
         if(newRep && newRep !== oldRep){
@@ -763,6 +1091,18 @@
       state.config.quotas = newQuotas;
       await saveConfig();
       await saveDeals();
+      render();
+    });
+
+    document.getElementById('ft-seed-data').addEventListener('click', async ()=>{
+      if(!confirm('Esto va a REEMPLAZAR los reps y todas las oportunidades actuales por los datos de ejemplo de SEIDOR (53 oportunidades ganadas). ¿Continuar?')) return;
+      state.config = { reps: SEED_DATA.reps.slice(), quotas: {} };
+      state.deals = JSON.parse(JSON.stringify(SEED_DATA.deals));
+      await saveConfig();
+      await saveDeals();
+      state.dashboardScope = '__team__';
+      state.activeTab = 'dashboard';
+      document.querySelectorAll('.ft-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==='dashboard'));
       render();
     });
   }
@@ -776,30 +1116,34 @@
 
       <div class="ft-section-title"><span class="bar"></span>Definiciones de Forecast Category</div>
       <p style="font-size:13px; line-height:1.7;">
-      ${fcatBadge('Commit')} certeza alta. RTC documentado, fecha de cierre creíble, Economic Buyer y Champion confirmados.<br>
-      ${fcatBadge('Best Case')} probable pero con riesgo (falta 1 elemento de MEDDPICC o la fecha es optimista).<br>
-      ${fcatBadge('Pipeline')} en desarrollo, etapa temprana, aún no calificado a fondo.<br>
-      ${fcatBadge('Omitted')} no cuenta para el mes/trimestre actual.
+      ${fcatBadge('Commit')} certeza alta — equivale al "worst case": lo mínimo que se va a cerrar.<br>
+      ${fcatBadge('Probable')} probable — equivale al "best case": razonablemente esperado pero con algo de riesgo.<br>
+      ${fcatBadge('Top Upside')} con potencial fuerte, pero aún no asegurado.<br>
+      ${fcatBadge('Upside')} en desarrollo, upside especulativo.
       </p>
 
-      <div class="ft-section-title"><span class="bar"></span>Regla para el forecast call</div>
-      <p style="font-size:13px; line-height:1.6;">Solo cuenta como <strong>Commit</strong> lo que tiene RTC documentado (próximo paso + fecha),
-      Economic Buyer y Champion confirmados. Si no los tiene, se baja a Best Case o Pipeline — no se vale forecast "de palabra".</p>
+      <div class="ft-section-title"><span class="bar"></span>Reglas de etapa → forecast category</div>
+      <p style="font-size:13px; line-height:1.7;">
+      • Si la etapa es <strong>B - Contracting</strong>, el forecast category se fuerza automáticamente a <strong>Commit</strong>.<br>
+      • Si la etapa es <strong>C - Negotiation</strong>, solo se puede elegir <strong>Commit</strong> o <strong>Probable</strong>.<br>
+      • En cualquier otra etapa, las 4 categorías están disponibles.
+      </p>
 
-      <div class="ft-section-title"><span class="bar"></span>¿Qué es "Estancado"?</div>
-      <p style="font-size:13px; line-height:1.6;">Una oportunidad abierta se marca automáticamente ${`<span class="badge badge-stalled">⚠️</span>`} si pasaron más de
-      ${STALL_DAYS} días desde su última actividad registrada. Esto expone el "dice cualquier cosa" antes del forecast call.</p>
+      <div class="ft-section-title"><span class="bar"></span>¿Qué es "Estancado" y "Actividad vencida"?</div>
+      <p style="font-size:13px; line-height:1.6;">Una oportunidad abierta se marca ${`<span class="badge badge-stalled">⚠️ Estancado</span>`} si pasaron más de
+      ${STALL_DAYS} días desde su última actividad registrada. Además, si registras una actividad con fecha y no la marcas
+      "Completada", y esa fecha ya pasó, se marca ${`<span class="badge badge-overdue">⏰ vencida</span>`} — ambas alertas aparecen en el Dashboard.</p>
+
+      <div class="ft-section-title"><span class="bar"></span>Vista de equipo vs. por vendedor</div>
+      <p style="font-size:13px; line-height:1.6;">El selector "Ver:" arriba del Dashboard cambia todo el tablero entre la vista consolidada del equipo
+      y los KPIs individuales de cada rep (cuota, forecast, upside, cierres, estancados, actividades vencidas).</p>
 
       <div class="ft-section-title"><span class="bar"></span>Dónde viven los datos</div>
       <p style="font-size:13px; line-height:1.6;">Este sitio guarda la información en un servidor compartido (Cloudflare Worker + KV), gratuito para este tamaño de equipo.
       Cualquier persona que abra el link ve y edita los mismos datos, sin pasos manuales.</p>
-      <p style="font-size:12.5px; color:var(--grey-text); line-height:1.6;">Si en algún momento el sitio no logra conectarse al servidor (por ejemplo, sin internet),
-      tus cambios se guardan temporalmente solo en tu navegador y verás una advertencia amarilla abajo — reintenta cuando tengas conexión.
+      <p style="font-size:12.5px; color:var(--grey-text); line-height:1.6;">Si en algún momento el sitio no logra conectarse al servidor, tus cambios se guardan temporalmente
+      solo en tu navegador y verás una advertencia amarilla abajo — reintenta cuando tengas conexión.
       Los botones <strong>⬇ Exportar</strong> / <strong>⬆ Importar</strong> siguen ahí como respaldo manual adicional.</p>
-
-      <div class="ft-section-title"><span class="bar"></span>Nota</div>
-      <p style="font-size:13px; line-height:1.6; color:var(--grey-text);">Este tablero es un puente. Cuando puedas reconfigurar HubSpot, esta misma lógica
-      (forecast category, RTC, MEDDPICC mínimo, aging) debería migrarse a propiedades nativas para no mantener dos sistemas en paralelo.</p>
     `;
   }
 
